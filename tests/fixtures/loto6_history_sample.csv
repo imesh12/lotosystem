@@ -1,0 +1,7 @@
+lottery,draw_number,draw_date,n1,n2,n3,n4,n5,n6,bonus,source,content_hash
+LOTO6,1001,2024-01-01,1,2,3,10,20,30,40,synthetic-stage03-fixture,loto6-synth-001
+LOTO6,1002,2024-01-04,2,4,6,10,22,31,41,synthetic-stage03-fixture,loto6-synth-002
+LOTO6,1003,2024-01-08,3,5,7,10,23,32,42,synthetic-stage03-fixture,loto6-synth-003
+LOTO6,1004,2024-01-11,1,4,7,11,24,33,43,synthetic-stage03-fixture,loto6-synth-004
+LOTO6,1005,2024-01-15,8,9,10,12,25,34,35,synthetic-stage03-fixture,loto6-synth-005
+LOTO6,1006,2024-01-18,1,2,10,13,26,35,36,synthetic-stage03-fixture,loto6-synth-006
