@@ -20,12 +20,14 @@ from backend.app.research.notifications import (
     EmailConfig,
     EmailPayload,
     build_draw_report,
+    email_config_from_env,
     notification_status,
     notify_draw_processed,
     notify_payout_completed,
     notify_source_failure,
     render_draw_processed_email,
     send_pending_notifications,
+    send_test_email,
 )
 from backend.app.research.operational_cycle import (
     CycleHistorySummary,
@@ -71,6 +73,125 @@ def _email_config(enabled: bool = True) -> EmailConfig:
         password="secret",
         use_tls=True,
     )
+
+
+def test_email_config_loads_dotenv_values(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.chdir(tmp_path)
+    for name in (
+        "LOTO_EMAIL_ENABLED",
+        "LOTO_EMAIL_FROM",
+        "LOTO_EMAIL_TO",
+        "LOTO_SMTP_HOST",
+        "LOTO_SMTP_PORT",
+        "LOTO_SMTP_USERNAME",
+        "LOTO_SMTP_PASSWORD",
+        "LOTO_SMTP_USE_TLS",
+    ):
+        monkeypatch.delenv(name, raising=False)
+    (tmp_path / ".env").write_text(
+        "\n".join(
+            (
+                "LOTO_EMAIL_ENABLED=true",
+                "LOTO_EMAIL_FROM=from@example.test",
+                "LOTO_EMAIL_TO=to@example.test",
+                "LOTO_SMTP_HOST=smtp.example.test",
+                "LOTO_SMTP_PORT=2525",
+                "LOTO_SMTP_USERNAME=user@example.test",
+                "LOTO_SMTP_PASSWORD=dotenv-secret",
+                "LOTO_SMTP_USE_TLS=false",
+            )
+        ),
+        encoding="utf-8",
+    )
+
+    config = email_config_from_env()
+
+    assert config.enabled is True
+    assert config.from_address == "from@example.test"
+    assert config.to_address == "to@example.test"
+    assert config.smtp_host == "smtp.example.test"
+    assert config.smtp_port == 2525
+    assert config.username == "user@example.test"
+    assert config.password == "dotenv-secret"
+    assert config.use_tls is False
+
+
+def test_process_environment_overrides_dotenv(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / ".env").write_text(
+        "\n".join(
+            (
+                "LOTO_EMAIL_ENABLED=false",
+                "LOTO_EMAIL_FROM=dotenv-from@example.test",
+                "LOTO_SMTP_PASSWORD=dotenv-secret",
+            )
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("LOTO_EMAIL_ENABLED", "true")
+    monkeypatch.setenv("LOTO_EMAIL_FROM", "env-from@example.test")
+    monkeypatch.setenv("LOTO_SMTP_PASSWORD", "env-secret")
+
+    config = email_config_from_env()
+
+    assert config.enabled is True
+    assert config.from_address == "env-from@example.test"
+    assert config.password == "env-secret"
+
+
+def test_missing_email_config_remains_disabled(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.chdir(tmp_path)
+    for name in (
+        "LOTO_EMAIL_ENABLED",
+        "LOTO_EMAIL_FROM",
+        "LOTO_EMAIL_TO",
+        "LOTO_SMTP_HOST",
+        "LOTO_SMTP_PORT",
+        "LOTO_SMTP_USERNAME",
+        "LOTO_SMTP_PASSWORD",
+        "LOTO_SMTP_USE_TLS",
+    ):
+        monkeypatch.delenv(name, raising=False)
+
+    config = email_config_from_env()
+
+    assert config.enabled is False
+    assert config.smtp_port == 587
+    assert config.password is None
+
+
+def test_password_from_dotenv_never_appears_in_status_or_notification_payload(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / ".env").write_text(
+        "\n".join(
+            (
+                "LOTO_EMAIL_ENABLED=true",
+                "LOTO_EMAIL_FROM=from@example.test",
+                "LOTO_EMAIL_TO=to@example.test",
+                "LOTO_SMTP_HOST=smtp.example.test",
+                "LOTO_SMTP_PASSWORD=dotenv-secret",
+            )
+        ),
+        encoding="utf-8",
+    )
+    record = send_test_email(
+        notification_root=tmp_path / "notifications",
+        sender=FakeSender([], error="smtp rejected dotenv-secret"),
+    )
+    status = notification_status(
+        notification_root=tmp_path / "notifications",
+        config=_email_config(enabled=False),
+    )
+
+    assert record.delivery_status == DELIVERY_FAILED
+    assert record.last_error == "smtp rejected [redacted]"
+    assert "dotenv-secret" not in json.dumps(status)
+    assert "dotenv-secret" not in (
+        tmp_path / "notifications" / f"{record.notification_id}.json"
+    ).read_text(encoding="utf-8")
 
 
 def _draw(lottery: LotteryDefinition) -> HistoricalDraw:
@@ -338,7 +459,10 @@ def test_notification_status_counts(tmp_path: Path) -> None:
         sender=FakeSender([]),
     )
 
-    status = notification_status(notification_root=tmp_path / "notifications")
+    status = notification_status(
+        notification_root=tmp_path / "notifications",
+        config=_email_config(enabled=False),
+    )
 
     assert status["enabled"] is False
     assert status["disabled"] == 1

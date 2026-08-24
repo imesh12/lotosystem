@@ -9,6 +9,9 @@ from email.message import EmailMessage
 from pathlib import Path
 from typing import Any, Protocol
 
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 from backend.app.domain.lottery import LotteryDefinition
 from backend.app.domain.rules import get_lottery_definition
 from backend.app.research.exceptions import ResearchValidationError
@@ -49,6 +52,19 @@ class EmailConfig:
     username: str | None
     password: str | None
     use_tls: bool
+
+
+class EmailEnvironmentSettings(BaseSettings):
+    email_enabled: bool = Field(default=False, validation_alias="LOTO_EMAIL_ENABLED")
+    email_from: str | None = Field(default=None, validation_alias="LOTO_EMAIL_FROM")
+    email_to: str | None = Field(default=None, validation_alias="LOTO_EMAIL_TO")
+    smtp_host: str | None = Field(default=None, validation_alias="LOTO_SMTP_HOST")
+    smtp_port: int = Field(default=587, validation_alias="LOTO_SMTP_PORT")
+    smtp_username: str | None = Field(default=None, validation_alias="LOTO_SMTP_USERNAME")
+    smtp_password: str | None = Field(default=None, validation_alias="LOTO_SMTP_PASSWORD")
+    smtp_use_tls: bool = Field(default=True, validation_alias="LOTO_SMTP_USE_TLS")
+
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 @dataclass(frozen=True, slots=True)
@@ -98,7 +114,19 @@ class NotificationRecord:
 
 
 def email_config_from_env(env: dict[str, str] | None = None) -> EmailConfig:
-    values = env if env is not None else os.environ
+    if env is None:
+        settings = EmailEnvironmentSettings()
+        return EmailConfig(
+            enabled=settings.email_enabled,
+            from_address=_empty_to_none(settings.email_from),
+            to_address=_empty_to_none(settings.email_to),
+            smtp_host=_empty_to_none(settings.smtp_host),
+            smtp_port=settings.smtp_port,
+            username=_empty_to_none(settings.smtp_username),
+            password=_empty_to_none(settings.smtp_password),
+            use_tls=settings.smtp_use_tls,
+        )
+    values = env
     return EmailConfig(
         enabled=_truthy(values.get("LOTO_EMAIL_ENABLED")),
         from_address=_empty_to_none(values.get("LOTO_EMAIL_FROM")),
@@ -539,7 +567,7 @@ def _attempt_delivery(
             record,
             delivery_status=DELIVERY_FAILED,
             attempt_count=record.attempt_count + 1,
-            last_error=_sanitize_error(str(exc)),
+            last_error=_sanitize_error(str(exc), config),
         )
         save_notification(updated, notification_path(notification_root, record.notification_id))
         return updated
@@ -615,8 +643,9 @@ def _empty_to_none(value: str | None) -> str | None:
     return value.strip()
 
 
-def _sanitize_error(message: str) -> str:
-    password = os.environ.get("LOTO_SMTP_PASSWORD")
-    if password:
-        return message.replace(password, "[redacted]")
-    return message
+def _sanitize_error(message: str, config: EmailConfig) -> str:
+    sanitized = message
+    for secret in (config.password, os.environ.get("LOTO_SMTP_PASSWORD")):
+        if secret:
+            sanitized = sanitized.replace(secret, "[redacted]")
+    return sanitized
