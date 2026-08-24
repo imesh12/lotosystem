@@ -53,3 +53,12 @@ models/*
 Thumbs.db
 .idea/
 .vscode/
+
+
+# Runtime automation state
+data/automation/runs/*
+!data/automation/runs/.gitkeep
+
+# Runtime notification delivery records
+data/notifications/*
+!data/notifications/.gitkeep
