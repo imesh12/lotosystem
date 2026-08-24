@@ -1,0 +1,38 @@
+{
+  "completed_at": "2026-08-24T02:15:47.546994+00:00",
+  "cycle_id": "CYCLE-MINI_LOTO-20260824T021544746128Z",
+  "errors": [],
+  "evaluated_predictions": [],
+  "history": {
+    "appended": 0,
+    "fallback_used": true,
+    "new_latest_draw": 1400,
+    "output_path": "data\\processed\\mini_loto_history.csv",
+    "previous_latest_draw": 1400,
+    "selected_source": "secondary",
+    "source_attempts": [
+      {
+        "error": "Mizuho source failure at https://www.mizuhobank.co.jp/takarakuji/check/loto/backnumber/index.html: access denied",
+        "result": "SOURCE_FAILURE",
+        "source": "mizuho"
+      },
+      {
+        "error": null,
+        "result": "NO_NEW_RESULT",
+        "source": "secondary"
+      }
+    ],
+    "update_status": "NO_NEW_RESULT"
+  },
+  "lottery": "MINI_LOTO",
+  "next_prediction": {
+    "created": false,
+    "draw": 1401,
+    "record_path": "data\\predictions\\MINI_LOTO\\1401.json",
+    "status": "PENDING",
+    "target_date": "2026-08-25",
+    "tickets": 3
+  },
+  "started_at": "2026-08-24T02:15:44.746128+00:00",
+  "warnings": []
+}

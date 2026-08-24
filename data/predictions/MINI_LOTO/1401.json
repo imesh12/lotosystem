@@ -1,0 +1,88 @@
+{
+  "config": {
+    "candidate_pool_size": 50,
+    "ml_min_training_draws": 100,
+    "ml_refit_interval": 25
+  },
+  "cost_yen": 600,
+  "dataset_hash": "7ac88c4d3243ccd0704a9575d1e7136e50841b60128eee08b3577d3de4b0560b",
+  "evaluation": null,
+  "feature_group": "pair_only",
+  "feature_names": [
+    "pair_strength_rate"
+  ],
+  "feature_version": "number-features-v2",
+  "generated_at": "2026-08-24T01:08:15.983521+00:00",
+  "gross_winnings_yen": null,
+  "latest_source_draw_date": "2026-08-18",
+  "latest_source_draw_number": 1400,
+  "lottery": "MINI_LOTO",
+  "model": "logistic_regression",
+  "model_parameters": {
+    "C": 1.0,
+    "class_weight": "balanced",
+    "dual": false,
+    "fit_intercept": true,
+    "intercept_scaling": 1,
+    "l1_ratio": 0.0,
+    "max_iter": 250,
+    "n_jobs": null,
+    "penalty": "deprecated",
+    "random_state": 123456,
+    "solver": "liblinear",
+    "tol": 0.0001,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "portfolio_method": "top_ranked",
+  "portfolio_version": "two-ticket-portfolio-v1",
+  "schema_version": "stage10-production-prediction-v1",
+  "seed": 123456,
+  "sklearn_version": "1.9.0",
+  "status": "PENDING",
+  "strategy": "conservative_stage09_selection",
+  "target_draw_date": "2026-08-25",
+  "target_draw_number": 1401,
+  "ticket_price_yen": 200,
+  "tickets": [
+    {
+      "numbers": [
+        3,
+        11,
+        19,
+        21,
+        31
+      ],
+      "score": 2.511190611008123,
+      "ticket_index": 1
+    },
+    {
+      "numbers": [
+        2,
+        14,
+        22,
+        27,
+        30
+      ],
+      "score": 2.505991809407809,
+      "ticket_index": 2
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        16,
+        23,
+        29
+      ],
+      "score": 2.5020307740765526,
+      "ticket_index": 3
+    }
+  ],
+  "tickets_per_draw": 3,
+  "warnings": [
+    "Paper-trading record only; no ticket purchase is performed.",
+    "Generated tickets are research outputs, not guaranteed winning numbers.",
+    "Payout amounts and ROI are not calculated."
+  ]
+}

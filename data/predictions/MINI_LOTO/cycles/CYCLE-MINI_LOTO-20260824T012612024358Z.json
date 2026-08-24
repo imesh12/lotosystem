@@ -1,0 +1,18 @@
+{
+  "completed_at": "2026-08-24T01:26:36.365827+00:00",
+  "cycle_id": "CYCLE-MINI_LOTO-20260824T012612024358Z",
+  "errors": [
+    "browser bootstrap found no rendered MINI_LOTO draw records"
+  ],
+  "evaluated_predictions": [],
+  "history": {
+    "appended": 0,
+    "new_latest_draw": 1400,
+    "output_path": "data\\processed\\mini_loto_history.csv",
+    "previous_latest_draw": 1400
+  },
+  "lottery": "MINI_LOTO",
+  "next_prediction": null,
+  "started_at": "2026-08-24T01:26:12.024358+00:00",
+  "warnings": []
+}

@@ -42,6 +42,35 @@ from backend.app.research.statistical_evaluation import (
 
 STAGE07_SCHEMA_VERSION = "stage07-ml-baseline-v1"
 FEATURE_VERSION = "number-features-v1"
+FEATURE_VERSION_V2 = "number-features-v2"
+FEATURE_NAMES_V1 = (
+    "frequency_rate",
+    "frequency_5",
+    "frequency_10",
+    "frequency_20",
+    "frequency_50",
+    "frequency_100",
+    "current_gap",
+    "mean_gap",
+    "gap_std",
+    "max_gap",
+    "recent_activity_10",
+    "pair_strength_rate",
+)
+FEATURE_NAMES_V2 = (
+    *FEATURE_NAMES_V1,
+    "frequency_momentum_5_20",
+    "frequency_momentum_10_50",
+    "frequency_ratio_5_20",
+    "gap_to_mean",
+    "gap_to_median",
+    "gap_z_score",
+    "seen_rate_per_draw",
+    "pair_mean_strength_rate",
+    "pair_max_strength_rate",
+    "previous_draw_presence",
+    "previous_draw_pair_strength_rate",
+)
 DEFAULT_ML_MIN_TRAINING_DRAWS = 100
 DEFAULT_ML_REFIT_INTERVAL = 25
 DEFAULT_RF_ESTIMATORS = 10
@@ -140,6 +169,7 @@ class _NumberFeatureState:
         self.last_seen_index: dict[int, int] = {}
         self.seen_indices: dict[int, list[int]] = {number: [] for number in self.numbers}
         self.pair_counts: Counter[tuple[int, int]] = Counter()
+        self.previous_draw: tuple[int, ...] = ()
 
     def add_draw(self, draw: HistoricalDraw) -> None:
         draw_index = self.draw_count
@@ -151,8 +181,9 @@ class _NumberFeatureState:
             self.last_seen_index[number] = draw_index
             self.seen_indices[number].append(draw_index)
         self.pair_counts.update(combinations(draw.main_numbers, 2))
+        self.previous_draw = draw.main_numbers
 
-    def features_for_number(self, number: int) -> tuple[float, ...]:
+    def feature_values_for_number(self, number: int) -> dict[str, float]:
         frequency_denominator = self.draw_count * self.lottery.numbers_per_ticket
         count = self.total_counts[number]
         gaps = tuple(
@@ -168,23 +199,61 @@ class _NumberFeatureState:
             if number not in self.last_seen_index
             else self.draw_count - 1 - self.last_seen_index[number]
         )
-        pair_strength = sum(
+        pair_counts = tuple(
             occurrence for pair, occurrence in self.pair_counts.items() if number in pair
         )
-        return (
-            count / frequency_denominator if frequency_denominator else 0.0,
-            float(self._window_count(number, 5)),
-            float(self._window_count(number, 10)),
-            float(self._window_count(number, 20)),
-            float(self._window_count(number, 50)),
-            float(self._window_count(number, 100)),
-            float(current_gap),
-            mean(gaps) if gaps else 0.0,
-            pstdev(gaps) if len(gaps) > 1 else 0.0,
-            float(max(gaps) if gaps else 0),
-            float(self._window_count(number, 10)),
-            pair_strength / self.draw_count if self.draw_count else 0.0,
+        pair_strength = sum(pair_counts)
+        mean_gap = mean(gaps) if gaps else 0.0
+        median_gap = _median(gaps)
+        gap_std = pstdev(gaps) if len(gaps) > 1 else 0.0
+        frequency_5 = self._window_count(number, 5)
+        frequency_10 = self._window_count(number, 10)
+        frequency_20 = self._window_count(number, 20)
+        frequency_50 = self._window_count(number, 50)
+        previous_pair_strength = sum(
+            self.pair_counts.get(tuple(sorted((number, previous_number))), 0)
+            for previous_number in self.previous_draw
+            if previous_number != number
         )
+        return {
+            "frequency_rate": count / frequency_denominator if frequency_denominator else 0.0,
+            "frequency_5": float(frequency_5),
+            "frequency_10": float(frequency_10),
+            "frequency_20": float(frequency_20),
+            "frequency_50": float(frequency_50),
+            "frequency_100": float(self._window_count(number, 100)),
+            "current_gap": float(current_gap),
+            "mean_gap": mean_gap,
+            "gap_std": gap_std,
+            "max_gap": float(max(gaps) if gaps else 0),
+            "recent_activity_10": float(frequency_10),
+            "pair_strength_rate": pair_strength / self.draw_count if self.draw_count else 0.0,
+            "frequency_momentum_5_20": (frequency_5 / 5) - (frequency_20 / 20),
+            "frequency_momentum_10_50": (frequency_10 / 10) - (frequency_50 / 50),
+            "frequency_ratio_5_20": _safe_ratio(frequency_5 / 5, frequency_20 / 20),
+            "gap_to_mean": _safe_ratio(current_gap, mean_gap),
+            "gap_to_median": _safe_ratio(current_gap, median_gap),
+            "gap_z_score": 0.0 if gap_std == 0 else (current_gap - mean_gap) / gap_std,
+            "seen_rate_per_draw": count / self.draw_count if self.draw_count else 0.0,
+            "pair_mean_strength_rate": (
+                mean(pair_counts) / self.draw_count if pair_counts and self.draw_count else 0.0
+            ),
+            "pair_max_strength_rate": (
+                max(pair_counts) / self.draw_count if pair_counts and self.draw_count else 0.0
+            ),
+            "previous_draw_presence": 1.0 if number in self.previous_draw else 0.0,
+            "previous_draw_pair_strength_rate": (
+                previous_pair_strength / self.draw_count if self.draw_count else 0.0
+            ),
+        }
+
+    def features_for_number(
+        self,
+        number: int,
+        feature_names: tuple[str, ...] = FEATURE_NAMES_V1,
+    ) -> tuple[float, ...]:
+        values = self.feature_values_for_number(number)
+        return tuple(values[name] for name in feature_names)
 
     def _window_count(self, number: int, window: int) -> int:
         return sum(number in draw_numbers for draw_numbers in self.recent_draws[-window:])
@@ -314,6 +383,7 @@ def run_stage07_ml_baseline(
 def build_walk_forward_feature_blocks(
     draws: tuple[HistoricalDraw, ...],
     lottery: LotteryDefinition,
+    feature_names: tuple[str, ...] = FEATURE_NAMES_V1,
 ) -> tuple[DrawFeatureBlock, ...]:
     state = _NumberFeatureState(lottery)
     blocks: list[DrawFeatureBlock] = []
@@ -324,7 +394,7 @@ def build_walk_forward_feature_blocks(
                 draw_number=draw.draw_number,
                 draw_date=draw.draw_date.isoformat(),
                 number=number,
-                features=state.features_for_number(number),
+                features=state.features_for_number(number, feature_names),
                 label=1 if number in draw.main_numbers else 0,
             )
             for number in state.numbers
@@ -777,6 +847,20 @@ def _effect_size(differences: tuple[float, ...], baseline_value: float) -> Effec
 
 def _rate(matches: tuple[int, ...], threshold: int) -> float:
     return sum(match >= threshold for match in matches) / len(matches) if matches else 0.0
+
+
+def _safe_ratio(numerator: float, denominator: float) -> float:
+    return 0.0 if denominator == 0 else numerator / denominator
+
+
+def _median(values: tuple[int, ...]) -> float:
+    if not values:
+        return 0.0
+    ordered = tuple(sorted(values))
+    midpoint = len(ordered) // 2
+    if len(ordered) % 2:
+        return float(ordered[midpoint])
+    return (ordered[midpoint - 1] + ordered[midpoint]) / 2
 
 
 def _derived_seed(seed: int, label: str) -> int:

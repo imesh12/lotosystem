@@ -1,0 +1,38 @@
+{
+  "completed_at": "2026-08-24T02:15:50.374520+00:00",
+  "cycle_id": "CYCLE-LOTO6-20260824T021547651432Z",
+  "errors": [],
+  "evaluated_predictions": [],
+  "history": {
+    "appended": 0,
+    "fallback_used": true,
+    "new_latest_draw": 2130,
+    "output_path": "data\\processed\\loto6_history.csv",
+    "previous_latest_draw": 2130,
+    "selected_source": "secondary",
+    "source_attempts": [
+      {
+        "error": "Mizuho source failure at https://www.mizuhobank.co.jp/takarakuji/check/loto/backnumber/index.html: access denied",
+        "result": "SOURCE_FAILURE",
+        "source": "mizuho"
+      },
+      {
+        "error": null,
+        "result": "NO_NEW_RESULT",
+        "source": "secondary"
+      }
+    ],
+    "update_status": "NO_NEW_RESULT"
+  },
+  "lottery": "LOTO6",
+  "next_prediction": {
+    "created": false,
+    "draw": 2131,
+    "record_path": "data\\predictions\\LOTO6\\2131.json",
+    "status": "PENDING",
+    "target_date": "2026-08-24",
+    "tickets": 3
+  },
+  "started_at": "2026-08-24T02:15:47.651432+00:00",
+  "warnings": []
+}

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LotoSystem Dashboard</title>
+    <link rel="stylesheet" href="/assets/app.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Paper Trading / Simulated</p>
+        <h1>LotoSystem Dashboard</h1>
+      </div>
+      <nav>
+        <a aria-current="page" href="/">Dashboard</a>
+        <a href="/settings">Settings</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="status-strip" aria-labelledby="system-title">
+        <div>
+          <h2 id="system-title">System</h2>
+          <p id="system-time">Loading current JST time...</p>
+        </div>
+        <button id="refresh-button" type="button">Refresh</button>
+      </section>
+
+      <div id="alert-region" class="alerts" aria-live="polite"></div>
+
+      <section class="grid two" aria-label="Lottery dashboard cards">
+        <article id="loto6-card" class="panel lottery-panel">
+          <h2>LOTO6</h2>
+          <div class="loading">Loading LOTO6...</div>
+        </article>
+        <article id="mini-loto-card" class="panel lottery-panel">
+          <h2>Mini Loto</h2>
+          <div class="loading">Loading Mini Loto...</div>
+        </article>
+      </section>
+
+      <section class="panel" aria-labelledby="finance-title">
+        <h2 id="finance-title">Financial Summary</h2>
+        <p class="note">Paper Trading / Simulated. These are not actual winnings.</p>
+        <div id="financial-summary" class="grid three"></div>
+      </section>
+    </main>
+
+    <script src="/assets/dashboard.js"></script>
+  </body>
+</html>

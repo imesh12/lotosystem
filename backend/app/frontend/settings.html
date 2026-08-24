@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LotoSystem Settings</title>
+    <link rel="stylesheet" href="/assets/app.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Operational Preferences</p>
+        <h1>LotoSystem Settings</h1>
+      </div>
+      <nav>
+        <a href="/">Dashboard</a>
+        <a aria-current="page" href="/settings">Settings</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="panel settings-panel">
+        <h2>Version 1 Settings</h2>
+        <p class="note">
+          Changes affect future predictions only. Existing saved prediction records are immutable.
+        </p>
+        <div id="settings-message" class="alerts" aria-live="polite"></div>
+        <form id="settings-form">
+          <fieldset>
+            <legend>LOTO6</legend>
+            <label class="check-row">
+              <input id="loto6-enabled" type="checkbox" />
+              Enabled
+            </label>
+            <label>
+              Number of sets per draw
+              <input id="loto6-tickets" type="number" min="1" max="20" step="1" required />
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Mini Loto</legend>
+            <label class="check-row">
+              <input id="mini-loto-enabled" type="checkbox" />
+              Enabled
+            </label>
+            <label>
+              Number of sets per draw
+              <input id="mini-loto-tickets" type="number" min="1" max="20" step="1" required />
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Email</legend>
+            <label class="check-row">
+              <input id="email-enabled" type="checkbox" />
+              Email notifications enabled
+            </label>
+          </fieldset>
+
+          <button type="submit">Save Settings</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="/assets/settings.js"></script>
+  </body>
+</html>

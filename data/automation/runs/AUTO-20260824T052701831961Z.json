@@ -1,0 +1,68 @@
+{
+  "completed_at": "2026-08-24T14:27:01.876501+09:00",
+  "errors": [],
+  "lotteries": [
+    {
+      "action": "NO_ACTION",
+      "errors": [],
+      "history_update": {
+        "appended": 0,
+        "new_latest_draw": 2130,
+        "previous_latest_draw": 2130
+      },
+      "lottery": "LOTO6",
+      "next_prediction": {
+        "draw": 2131,
+        "record_path": "data\\predictions\\LOTO6\\2131.json",
+        "status": "PENDING",
+        "target_date": "2026-08-24",
+        "target_draw_date": "2026-08-24",
+        "target_draw_number": 2131,
+        "tickets": 3
+      },
+      "next_run_at": "2026-08-24T21:00:00+09:00",
+      "notifications": [],
+      "prediction_evaluation": {
+        "evaluated": []
+      },
+      "result_source_status": null,
+      "settlement": {
+        "paths": []
+      },
+      "warnings": []
+    },
+    {
+      "action": "NO_ACTION",
+      "errors": [],
+      "history_update": {
+        "appended": 0,
+        "new_latest_draw": 1400,
+        "previous_latest_draw": 1400
+      },
+      "lottery": "MINI_LOTO",
+      "next_prediction": {
+        "draw": 1401,
+        "record_path": "data\\predictions\\MINI_LOTO\\1401.json",
+        "status": "PENDING",
+        "target_date": "2026-08-25",
+        "target_draw_date": "2026-08-25",
+        "target_draw_number": 1401,
+        "tickets": 3
+      },
+      "next_run_at": "2026-08-25T21:00:00+09:00",
+      "notifications": [],
+      "prediction_evaluation": {
+        "evaluated": []
+      },
+      "result_source_status": null,
+      "settlement": {
+        "paths": []
+      },
+      "warnings": []
+    }
+  ],
+  "run_at": "2026-08-24T14:27:01.831961+09:00",
+  "run_id": "AUTO-20260824T052701831961Z",
+  "timezone": "Asia/Tokyo",
+  "warnings": []
+}

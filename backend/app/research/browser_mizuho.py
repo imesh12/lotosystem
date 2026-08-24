@@ -27,6 +27,9 @@ MIZUHO_CURRENT_RESULT_URLS = {
     "miniloto": "https://www.mizuhobank.co.jp/takarakuji/check/loto/miniloto/index.html",
 }
 INCREMENTAL_BRIDGE_RANGE_COUNT = 12
+PAGE_STATE_ACCESS_DENIED = "ACCESS_DENIED"
+PAGE_STATE_EMPTY_OR_LOADING = "EMPTY_OR_LOADING"
+PAGE_STATE_RENDERED = "RENDERED"
 
 
 @dataclass(frozen=True, slots=True)
@@ -84,6 +87,7 @@ class BrowserMizuhoCollector(CollectorInterface):
 
                 for url in recent_urls:
                     page.goto(url, wait_until="domcontentloaded")
+                    _raise_for_source_failure(page, url)
                     if not _wait_for_rendered_rows(page, timeout_ms=self.row_timeout_ms):
                         continue
                     document = _document_from_page(page, url)
@@ -92,6 +96,7 @@ class BrowserMizuhoCollector(CollectorInterface):
 
                 for archive_range in ranges:
                     page.goto(archive_range.url, wait_until="domcontentloaded")
+                    _raise_for_source_failure(page, archive_range.url)
                     if not _wait_for_rendered_rows(page, timeout_ms=self.row_timeout_ms):
                         if (
                             self.minimum_draw_number is not None
@@ -108,6 +113,9 @@ class BrowserMizuhoCollector(CollectorInterface):
                 browser.close()
         except (PlaywrightError, PlaywrightTimeoutError) as exc:
             raise ResearchValidationError(f"Mizuho browser bootstrap failed: {exc}") from exc
+
+        if not draws and self.minimum_draw_number is not None:
+            return ()
 
         if not draws:
             raise ResearchValidationError(
@@ -128,6 +136,7 @@ class BrowserMizuhoCollector(CollectorInterface):
             page.wait_for_load_state("networkidle", timeout=self.timeout_ms)
         except Exception:
             pass
+        _raise_for_source_failure(page, self.index_url)
         hrefs = page.locator("a[href]").evaluate_all(
             "links => links.map(link => link.href).filter(Boolean)"
         )
@@ -162,6 +171,7 @@ class BrowserMizuhoCollector(CollectorInterface):
             page.wait_for_load_state("networkidle", timeout=self.timeout_ms)
         except Exception:
             pass
+        _raise_for_source_failure(page, self.index_url)
         hrefs = page.locator("a[href]").evaluate_all(
             "links => links.map(link => link.href).filter(Boolean)"
         )
@@ -307,6 +317,49 @@ def _wait_for_rendered_rows(page: object, *, timeout_ms: int) -> bool:
     return True
 
 
+def classify_mizuho_page_state(
+    *,
+    title: str,
+    body_text: str,
+    table_count: int,
+    row_count: int,
+) -> str:
+    normalized_title = title.casefold()
+    normalized_body = body_text.casefold()
+    if (
+        "access denied" in normalized_title
+        or "access denied" in normalized_body
+        or "permission to access" in normalized_body
+        or "errors.edgesuite.net" in normalized_body
+    ):
+        return PAGE_STATE_ACCESS_DENIED
+    if table_count == 0 and row_count == 0:
+        return PAGE_STATE_EMPTY_OR_LOADING
+    return PAGE_STATE_RENDERED
+
+
+def _raise_for_source_failure(page: object, url: str) -> None:
+    title = page.title()
+    try:
+        body_text = page.locator("body").inner_text(timeout=2_000)
+    except Exception:
+        body_text = ""
+    table_count = page.locator("table").count()
+    row_count = page.locator("table tr").count()
+    state = classify_mizuho_page_state(
+        title=title,
+        body_text=body_text,
+        table_count=table_count,
+        row_count=row_count,
+    )
+    if state == PAGE_STATE_ACCESS_DENIED:
+        raise ResearchValidationError(f"Mizuho source failure at {url}: access denied")
+    if state == PAGE_STATE_EMPTY_OR_LOADING and _is_result_or_detail_url(url):
+        raise ResearchValidationError(
+            f"Mizuho source failure at {url}: rendered page contained no result table"
+        )
+
+
 def _extract_rendered_rows(page: object) -> tuple[tuple[str, ...], ...]:
     rows = page.locator(".js-lottery-backnumber-list table.pc-only tr, table tr").evaluate_all(
         """rows => rows.map(row => Array.from(row.querySelectorAll('th,td'))
@@ -326,6 +379,15 @@ def _extract_rendered_rows(page: object) -> tuple[tuple[str, ...], ...]:
     )
     combined = [*rows, *draw_tables]
     return tuple(tuple(str(cell) for cell in row) for row in combined if row)
+
+
+def _is_result_or_detail_url(url: str) -> bool:
+    parsed = urlparse(url)
+    return (
+        parsed.path.endswith("/detail.html")
+        or parsed.path.endswith("/loto6/index.html")
+        or parsed.path.endswith("/miniloto/index.html")
+    )
 
 
 def _document_from_page(page: object, url: str) -> SourceDocument:

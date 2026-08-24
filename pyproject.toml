@@ -1,6 +1,6 @@
 [project]
 name = "loto-system"
-version = "0.1.0"
+version = "1.0.0"
 description = "Research-oriented foundation for LOTO6 and Mini Loto analysis."
 readme = "README.md"
 requires-python = ">=3.12"

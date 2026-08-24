@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -11,21 +11,34 @@ import pytest
 from backend.app.domain import LOTO6, MINI_LOTO
 from backend.app.domain.lottery import LotteryDefinition
 from backend.app.research.browser_mizuho import (
+    PAGE_STATE_ACCESS_DENIED,
+    PAGE_STATE_EMPTY_OR_LOADING,
+    PAGE_STATE_RENDERED,
     _deduplicate_browser_draws,
     _page_is_before_start_date,
+    classify_mizuho_page_state,
     discover_mizuho_archive_ranges,
     discover_mizuho_recent_result_urls,
     generate_mizuho_archive_ranges,
 )
 from backend.app.research.collectors import CollectorInterface
+from backend.app.research.config import ResearchConfig
 from backend.app.research.data import HistoricalDraw, load_draws_csv
 from backend.app.research.dataset import calculate_dataset_hash
 from backend.app.research.exceptions import ResearchValidationError
 from backend.app.research.history_import import (
+    HISTORY_UPDATE_NEW_RESULT,
+    HISTORY_UPDATE_NO_NEW_RESULT,
+    HISTORY_UPDATE_SOURCE_FAILURE,
+    RESULT_SOURCE_MANUAL,
+    RESULT_SOURCE_MIZUHO,
+    RESULT_SOURCE_SECONDARY,
     _incremental_minimum_draw_number,
+    append_manual_result,
     find_missing_draw_numbers,
     merge_historical_draws,
     update_history,
+    update_history_with_sources,
     verify_history,
     write_canonical_history_csv,
 )
@@ -37,6 +50,13 @@ from backend.app.research.mizuho import (
     parse_mizuho_html_archive,
     parse_mizuho_rendered_rows,
 )
+from backend.app.research.production import (
+    PREDICTION_STATUS_EVALUATED,
+    evaluate_pending_predictions,
+    generate_next_prediction,
+    load_prediction_record,
+)
+from backend.app.research.result_sources import SMBC_SOURCE, parse_smbc_result_xml
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 RETRIEVED_AT = datetime(2026, 8, 20, 0, 0, tzinfo=UTC)
@@ -48,6 +68,14 @@ class StaticCollector(CollectorInterface):
 
     def collect(self, lottery: LotteryDefinition) -> tuple[HistoricalDraw, ...]:
         return tuple(draw for draw in self.draws if draw.lottery.code == lottery.code)
+
+
+class FailingCollector(CollectorInterface):
+    def __init__(self, message: str = "source unavailable") -> None:
+        self.message = message
+
+    def collect(self, lottery: LotteryDefinition) -> tuple[HistoricalDraw, ...]:
+        raise ResearchValidationError(self.message)
 
 
 def _document(name: str, url: str = "https://www.mizuhobank.co.jp/test.html") -> SourceDocument:
@@ -141,6 +169,40 @@ def test_loto6_recent_result_grouped_table_parsing() -> None:
     assert draws[0].bonus_numbers == (19,)
 
 
+def test_current_page_with_new_loto6_result_parses_newer_draw() -> None:
+    document = SourceDocument(
+        url="https://www.mizuhobank.co.jp/takarakuji/check/loto/loto6/index.html",
+        text="rendered",
+        retrieved_at=RETRIEVED_AT,
+        content_hash="renderedhash",
+    )
+    draws = parse_mizuho_rendered_rows(
+        (
+            (
+                "回別",
+                "第2131回",
+                "抽せん日",
+                "2026年8月24日",
+                "本数字",
+                "01",
+                "10",
+                "17",
+                "24",
+                "31",
+                "43",
+                "ボーナス数字",
+                "(02)",
+            ),
+        ),
+        LOTO6,
+        document,
+    )
+
+    assert len(draws) == 1
+    assert draws[0].draw_number == 2131
+    assert draws[0].draw_date == date(2026, 8, 24)
+
+
 def test_mini_loto_rendered_table_extraction() -> None:
     document = SourceDocument(
         url="https://www.mizuhobank.co.jp/takarakuji/check/loto/backnumber/detail.html",
@@ -200,6 +262,38 @@ def test_mini_loto_recent_result_grouped_table_parsing() -> None:
     assert draws[0].bonus_numbers == (7,)
 
 
+def test_monthly_page_with_new_mini_loto_result_parses_newer_draw() -> None:
+    document = SourceDocument(
+        url="https://www.mizuhobank.co.jp/takarakuji/check/loto/miniloto/index.html?year=2026&month=8",
+        text="rendered",
+        retrieved_at=RETRIEVED_AT,
+        content_hash="renderedhash",
+    )
+    draws = parse_mizuho_rendered_rows(
+        (
+            (
+                "回別",
+                "第1401回",
+                "抽せん日",
+                "2026年8月25日",
+                "本数字(　)はボーナス数字",
+                "01",
+                "08",
+                "15",
+                "22",
+                "29",
+                "(03)",
+            ),
+        ),
+        MINI_LOTO,
+        document,
+    )
+
+    assert len(draws) == 1
+    assert draws[0].draw_number == 1401
+    assert draws[0].draw_date == date(2026, 8, 25)
+
+
 def test_empty_rendered_table_extraction_returns_no_draws() -> None:
     document = SourceDocument(
         url="https://www.mizuhobank.co.jp/takarakuji/check/loto/backnumber/detail.html",
@@ -213,6 +307,36 @@ def test_empty_rendered_table_extraction_returns_no_draws() -> None:
             (("回別", "抽せん日", "本数字", "ボーナス数字"),), LOTO6, document
         )
         == ()
+    )
+
+
+def test_mizuho_page_state_distinguishes_access_denied_empty_and_rendered() -> None:
+    assert (
+        classify_mizuho_page_state(
+            title="Access Denied",
+            body_text="You don't have permission to access this resource",
+            table_count=0,
+            row_count=0,
+        )
+        == PAGE_STATE_ACCESS_DENIED
+    )
+    assert (
+        classify_mizuho_page_state(
+            title="ロト6",
+            body_text="Loading",
+            table_count=0,
+            row_count=0,
+        )
+        == PAGE_STATE_EMPTY_OR_LOADING
+    )
+    assert (
+        classify_mizuho_page_state(
+            title="ロト6",
+            body_text="第2131回 抽せん日",
+            table_count=1,
+            row_count=2,
+        )
+        == PAGE_STATE_RENDERED
     )
 
 
@@ -420,6 +544,24 @@ def test_update_history_already_current_no_op_keeps_existing_file(tmp_path: Path
     assert result.appended_count == 0
     assert result.unchanged_count == 1
     assert result.written_count == 2
+    assert result.update_status == HISTORY_UPDATE_NO_NEW_RESULT
+
+
+def test_update_history_no_new_result_accepts_successfully_loaded_overlap(
+    tmp_path: Path,
+) -> None:
+    draws = (
+        HistoricalDraw(MINI_LOTO, 1399, date(2026, 8, 11), (1, 2, 3, 4, 5), (6,)),
+        HistoricalDraw(MINI_LOTO, 1400, date(2026, 8, 18), (7, 8, 9, 10, 11), (12,)),
+    )
+    output_path = tmp_path / "mini_loto_history.csv"
+    write_canonical_history_csv(draws, output_path)
+
+    result = update_history(output_path, MINI_LOTO, StaticCollector((draws[-1],)))
+
+    assert result.appended_count == 0
+    assert result.unchanged_count == 1
+    assert result.update_status == HISTORY_UPDATE_NO_NEW_RESULT
 
 
 def test_update_history_appends_incremental_new_draw(tmp_path: Path) -> None:
@@ -435,6 +577,175 @@ def test_update_history_appends_incremental_new_draw(tmp_path: Path) -> None:
     assert result.existing_count == 1
     assert result.appended_count == 1
     assert result.written_count == 2
+    assert result.update_status == HISTORY_UPDATE_NEW_RESULT
+
+
+def test_smbc_xml_parser_supports_loto6_and_mini_loto() -> None:
+    loto6_doc = SourceDocument(
+        url="https://www.smbc.co.jp/kojin/takarakuji/xml/takara_chusen_05.xml",
+        text='<root><data TYUSEN_YMD="20260820" GAME_TYPE="05" KAIGOU="2130" '
+        'TOUSEN_NUMBER="121835404143      " BONUS_NUMBER="03" /></root>',
+        retrieved_at=RETRIEVED_AT,
+        content_hash="smbc-loto6",
+    )
+    mini_doc = SourceDocument(
+        url="https://www.smbc.co.jp/kojin/takarakuji/xml/takara_chusen_04.xml",
+        text='<root><data TYUSEN_YMD="20260818" GAME_TYPE="04" KAIGOU="1400" '
+        'TOUSEN_NUMBER="0114151729        " BONUS_NUMBER="30" /></root>',
+        retrieved_at=RETRIEVED_AT,
+        content_hash="smbc-mini",
+    )
+
+    loto6 = parse_smbc_result_xml(loto6_doc.text, LOTO6, loto6_doc)
+    mini = parse_smbc_result_xml(mini_doc.text, MINI_LOTO, mini_doc)
+
+    assert loto6[0].draw_number == 2130
+    assert loto6[0].main_numbers == (12, 18, 35, 40, 41, 43)
+    assert loto6[0].bonus_numbers == (3,)
+    assert loto6[0].source == SMBC_SOURCE
+    assert mini[0].draw_number == 1400
+    assert mini[0].main_numbers == (1, 14, 15, 17, 29)
+    assert mini[0].bonus_numbers == (30,)
+
+
+def test_resilient_sources_accept_mizuho_success_without_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    existing = (HistoricalDraw(LOTO6, 2129, date(2026, 8, 17), (1, 2, 3, 4, 5, 6), (7,)),)
+    fetched = (HistoricalDraw(LOTO6, 2130, date(2026, 8, 20), (8, 9, 10, 11, 12, 13), (14,)),)
+    output_path = tmp_path / "loto6_history.csv"
+    write_canonical_history_csv(existing, output_path)
+    monkeypatch.setattr(
+        "backend.app.research.history_import.BrowserMizuhoCollector",
+        lambda **_: StaticCollector(fetched),
+    )
+
+    result = update_history_with_sources(LOTO6, output_path=output_path)
+
+    assert result.update_status == HISTORY_UPDATE_NEW_RESULT
+    assert result.selected_source == RESULT_SOURCE_MIZUHO
+    assert result.fallback_used is False
+    assert [(attempt.source, attempt.result) for attempt in result.source_attempts] == [
+        (RESULT_SOURCE_MIZUHO, HISTORY_UPDATE_NEW_RESULT)
+    ]
+
+
+def test_resilient_sources_do_not_query_fallback_after_mizuho_no_new_result(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    existing = (HistoricalDraw(LOTO6, 2130, date(2026, 8, 20), (8, 9, 10, 11, 12, 13), (14,)),)
+    output_path = tmp_path / "loto6_history.csv"
+    write_canonical_history_csv(existing, output_path)
+    monkeypatch.setattr(
+        "backend.app.research.history_import.BrowserMizuhoCollector",
+        lambda **_: StaticCollector(existing),
+    )
+    monkeypatch.setattr(
+        "backend.app.research.result_sources.SMBCResultSource",
+        lambda **_: FailingCollector("secondary should not be used"),
+    )
+
+    result = update_history_with_sources(LOTO6, output_path=output_path)
+
+    assert result.update_status == HISTORY_UPDATE_NO_NEW_RESULT
+    assert result.selected_source == RESULT_SOURCE_MIZUHO
+    assert result.fallback_used is False
+
+
+def test_resilient_sources_fallback_to_secondary_success(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    existing = (HistoricalDraw(MINI_LOTO, 1399, date(2026, 8, 11), (1, 2, 3, 4, 5), (6,)),)
+    fetched = (HistoricalDraw(MINI_LOTO, 1400, date(2026, 8, 18), (7, 8, 9, 10, 11), (12,)),)
+    output_path = tmp_path / "mini_loto_history.csv"
+    write_canonical_history_csv(existing, output_path)
+    monkeypatch.setattr(
+        "backend.app.research.history_import.BrowserMizuhoCollector",
+        lambda **_: FailingCollector("mizuho denied"),
+    )
+    monkeypatch.setattr(
+        "backend.app.research.result_sources.SMBCResultSource",
+        lambda **_: StaticCollector(fetched),
+    )
+
+    result = update_history_with_sources(MINI_LOTO, output_path=output_path)
+
+    assert result.update_status == HISTORY_UPDATE_NEW_RESULT
+    assert result.selected_source == RESULT_SOURCE_SECONDARY
+    assert result.fallback_used is True
+    assert [(attempt.source, attempt.result) for attempt in result.source_attempts] == [
+        (RESULT_SOURCE_MIZUHO, HISTORY_UPDATE_SOURCE_FAILURE),
+        (RESULT_SOURCE_SECONDARY, HISTORY_UPDATE_NEW_RESULT),
+    ]
+
+
+def test_resilient_sources_fallback_to_secondary_no_new_result(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    existing = (HistoricalDraw(MINI_LOTO, 1400, date(2026, 8, 18), (7, 8, 9, 10, 11), (12,)),)
+    output_path = tmp_path / "mini_loto_history.csv"
+    write_canonical_history_csv(existing, output_path)
+    monkeypatch.setattr(
+        "backend.app.research.history_import.BrowserMizuhoCollector",
+        lambda **_: FailingCollector("mizuho denied"),
+    )
+    monkeypatch.setattr(
+        "backend.app.research.result_sources.SMBCResultSource",
+        lambda **_: StaticCollector(existing),
+    )
+
+    result = update_history_with_sources(MINI_LOTO, output_path=output_path)
+
+    assert result.update_status == HISTORY_UPDATE_NO_NEW_RESULT
+    assert result.selected_source == RESULT_SOURCE_SECONDARY
+    assert result.fallback_used is True
+
+
+def test_resilient_sources_report_all_sources_failed(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    output_path = tmp_path / "loto6_history.csv"
+    write_canonical_history_csv(
+        (HistoricalDraw(LOTO6, 2130, date(2026, 8, 20), (8, 9, 10, 11, 12, 13), (14,)),),
+        output_path,
+    )
+    monkeypatch.setattr(
+        "backend.app.research.history_import.BrowserMizuhoCollector",
+        lambda **_: FailingCollector("mizuho denied"),
+    )
+    monkeypatch.setattr(
+        "backend.app.research.result_sources.SMBCResultSource",
+        lambda **_: FailingCollector("secondary unavailable"),
+    )
+
+    with pytest.raises(ResearchValidationError, match="manual result entry required"):
+        update_history_with_sources(LOTO6, output_path=output_path)
+
+
+def test_resilient_sources_reject_conflicting_source_result(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    existing = (HistoricalDraw(LOTO6, 2130, date(2026, 8, 20), (8, 9, 10, 11, 12, 13), (14,)),)
+    conflict = (HistoricalDraw(LOTO6, 2130, date(2026, 8, 20), (8, 9, 10, 11, 12, 15), (14,)),)
+    output_path = tmp_path / "loto6_history.csv"
+    write_canonical_history_csv(existing, output_path)
+    monkeypatch.setattr(
+        "backend.app.research.history_import.BrowserMizuhoCollector",
+        lambda **_: StaticCollector(conflict),
+    )
+
+    with pytest.raises(ResearchValidationError, match="manual result entry required"):
+        update_history_with_sources(
+            LOTO6,
+            output_path=output_path,
+            source_order=(RESULT_SOURCE_MIZUHO,),
+        )
 
 
 def test_update_history_can_repair_gap_older_than_latest_draw(tmp_path: Path) -> None:
@@ -452,6 +763,146 @@ def test_update_history_can_repair_gap_older_than_latest_draw(tmp_path: Path) ->
     assert result.appended_count == 1
     assert [draw.draw_number for draw in draws] == [484, 485, 486]
     assert result.verification.missing_draw_numbers == ()
+
+
+def test_manual_append_valid_loto6_result_preserves_provenance(tmp_path: Path) -> None:
+    output_path = tmp_path / "loto6_history.csv"
+    existing = (HistoricalDraw(LOTO6, 2130, date(2026, 8, 20), (8, 9, 10, 11, 12, 13), (14,)),)
+    write_canonical_history_csv(existing, output_path)
+
+    result = append_manual_result(
+        LOTO6,
+        draw_number=2131,
+        draw_date=date(2026, 8, 24),
+        main_numbers=(1, 2, 3, 4, 5, 6),
+        bonus_numbers=(7,),
+        output_path=output_path,
+        confirmed=True,
+    )
+    draws = load_draws_csv(output_path, LOTO6)
+
+    assert result.appended_count == 1
+    assert result.selected_source == RESULT_SOURCE_MANUAL
+    assert draws[-1].source == RESULT_SOURCE_MANUAL
+    assert draws[-1].source_url == "manual:cli"
+
+
+def test_manual_append_valid_mini_loto_result(tmp_path: Path) -> None:
+    output_path = tmp_path / "mini_loto_history.csv"
+    existing = (HistoricalDraw(MINI_LOTO, 1400, date(2026, 8, 18), (7, 8, 9, 10, 11), (12,)),)
+    write_canonical_history_csv(existing, output_path)
+
+    result = append_manual_result(
+        MINI_LOTO,
+        draw_number=1401,
+        draw_date=date(2026, 8, 25),
+        main_numbers=(1, 2, 3, 4, 5),
+        bonus_numbers=(6,),
+        output_path=output_path,
+        confirmed=True,
+    )
+
+    assert result.appended_count == 1
+    assert load_draws_csv(output_path, MINI_LOTO)[-1].draw_number == 1401
+
+
+def test_manual_append_requires_confirmation(tmp_path: Path) -> None:
+    with pytest.raises(ResearchValidationError, match="requires --confirm-manual"):
+        append_manual_result(
+            LOTO6,
+            draw_number=2131,
+            draw_date=date(2026, 8, 24),
+            main_numbers=(1, 2, 3, 4, 5, 6),
+            bonus_numbers=(7,),
+            output_path=tmp_path / "loto6_history.csv",
+            confirmed=False,
+        )
+
+
+def test_manual_append_invalid_range_is_rejected(tmp_path: Path) -> None:
+    with pytest.raises(ResearchValidationError, match="between 1 and 43"):
+        append_manual_result(
+            LOTO6,
+            draw_number=2131,
+            draw_date=date(2026, 8, 24),
+            main_numbers=(1, 2, 3, 4, 5, 99),
+            bonus_numbers=(7,),
+            output_path=tmp_path / "loto6_history.csv",
+            confirmed=True,
+        )
+
+
+def test_manual_append_duplicate_is_idempotent_and_conflict_is_rejected(tmp_path: Path) -> None:
+    output_path = tmp_path / "loto6_history.csv"
+    existing = (HistoricalDraw(LOTO6, 2131, date(2026, 8, 24), (1, 2, 3, 4, 5, 6), (7,)),)
+    write_canonical_history_csv(existing, output_path)
+
+    duplicate = append_manual_result(
+        LOTO6,
+        draw_number=2131,
+        draw_date=date(2026, 8, 24),
+        main_numbers=(1, 2, 3, 4, 5, 6),
+        bonus_numbers=(7,),
+        output_path=output_path,
+        confirmed=True,
+    )
+    assert duplicate.appended_count == 0
+    assert duplicate.update_status == HISTORY_UPDATE_NO_NEW_RESULT
+
+    with pytest.raises(ResearchValidationError, match="conflicting historical record"):
+        append_manual_result(
+            LOTO6,
+            draw_number=2131,
+            draw_date=date(2026, 8, 24),
+            main_numbers=(1, 2, 3, 4, 5, 8),
+            bonus_numbers=(7,),
+            output_path=output_path,
+            confirmed=True,
+        )
+
+
+def test_manual_append_allows_pending_prediction_evaluation(tmp_path: Path) -> None:
+    output_path = tmp_path / "mini_loto_history.csv"
+    draws = (
+        HistoricalDraw(MINI_LOTO, 1299, date(2024, 8, 13), (1, 2, 3, 4, 5), (6,)),
+        *(
+            HistoricalDraw(
+                MINI_LOTO,
+                1300 + index,
+                date(2024, 8, 20) + timedelta(days=index * 7),
+                tuple(range(1 + index % 10, 6 + index % 10)),
+                (20 + index % 10,),
+            )
+            for index in range(105)
+        ),
+    )
+    write_canonical_history_csv(draws, output_path)
+    pending = generate_next_prediction(
+        draws,
+        MINI_LOTO,
+        ResearchConfig(seed=123456),
+        tickets_per_draw=2,
+        prediction_root=tmp_path / "predictions",
+    )
+    target_draw = pending.record.target_draw_number
+
+    append_manual_result(
+        MINI_LOTO,
+        draw_number=target_draw,
+        draw_date=date.fromisoformat(pending.record.target_draw_date),
+        main_numbers=(1, 2, 3, 4, 5),
+        bonus_numbers=(6,),
+        output_path=output_path,
+        confirmed=True,
+    )
+    result = evaluate_pending_predictions(
+        load_draws_csv(output_path, MINI_LOTO),
+        MINI_LOTO,
+        prediction_root=tmp_path / "predictions",
+    )
+
+    assert result.evaluated_count == 1
+    assert load_prediction_record(pending.record_path).status == PREDICTION_STATUS_EVALUATED
 
 
 def test_update_history_uses_offline_mocked_collector(tmp_path: Path) -> None:
@@ -560,3 +1011,41 @@ def test_cli_validate_data_rejects_empty_history_file(tmp_path: Path) -> None:
     assert completed.returncode == 1
     assert payload["status"] == "error"
     assert "no LOTO6 draw records" in payload["error"]
+
+
+def test_cli_add_result_appends_manual_result(tmp_path: Path) -> None:
+    csv_path = tmp_path / "loto6_history.csv"
+    write_canonical_history_csv(
+        (HistoricalDraw(LOTO6, 2130, date(2026, 8, 20), (8, 9, 10, 11, 12, 13), (14,)),),
+        csv_path,
+    )
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "backend.app.research.cli",
+            "--lottery",
+            "LOTO6",
+            "--output",
+            str(csv_path),
+            "--draw-number",
+            "2131",
+            "--draw-date",
+            "2026-08-24",
+            "--numbers",
+            "01,02,03,04,05,06",
+            "--bonus",
+            "07",
+            "--confirm-manual",
+            "add-result",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    payload = json.loads(completed.stdout)
+    assert completed.returncode == 0
+    assert payload["appended_count"] == 1
+    assert load_draws_csv(csv_path, LOTO6)[-1].source == RESULT_SOURCE_MANUAL

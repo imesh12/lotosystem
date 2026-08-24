@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 from collections import Counter
 from dataclasses import dataclass
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 from backend.app.domain.lottery import LotteryDefinition
@@ -35,6 +35,12 @@ CANONICAL_HISTORY_COLUMNS = (
     "retrieved_at",
     "content_hash",
 )
+HISTORY_UPDATE_NEW_RESULT = "NEW_RESULT"
+HISTORY_UPDATE_NO_NEW_RESULT = "NO_NEW_RESULT"
+HISTORY_UPDATE_SOURCE_FAILURE = "SOURCE_FAILURE"
+RESULT_SOURCE_MIZUHO = "mizuho"
+RESULT_SOURCE_SECONDARY = "secondary"
+RESULT_SOURCE_MANUAL = "manual"
 
 
 @dataclass(frozen=True, slots=True)
@@ -62,6 +68,13 @@ class HistoryVerification:
 
 
 @dataclass(frozen=True, slots=True)
+class HistorySourceAttempt:
+    source: str
+    result: str
+    error: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
 class HistoryUpdateResult:
     output_path: str
     fetched_count: int
@@ -70,6 +83,11 @@ class HistoryUpdateResult:
     appended_count: int
     unchanged_count: int
     verification: HistoryVerification
+    update_status: str = HISTORY_UPDATE_NEW_RESULT
+    source_attempts: tuple[HistorySourceAttempt, ...] = ()
+    selected_source: str | None = None
+    fallback_used: bool = False
+    warnings: tuple[str, ...] = ()
 
 
 def canonical_history_path(lottery: LotteryDefinition) -> Path:
@@ -105,6 +123,70 @@ def update_mizuho_history(
     return update_history(destination, lottery, collector, existing_draws=existing)
 
 
+def update_history_with_sources(
+    lottery: LotteryDefinition,
+    *,
+    output_path: str | Path | None = None,
+    start_date: date = DEFAULT_HISTORY_START,
+    end_date: date | None = None,
+    incremental: bool = True,
+    headed: bool = False,
+    row_timeout_ms: int = 7_000,
+    source_order: tuple[str, ...] = (RESULT_SOURCE_MIZUHO, RESULT_SOURCE_SECONDARY),
+) -> HistoryUpdateResult:
+    from backend.app.research.result_sources import SMBCResultSource
+
+    destination = Path(output_path) if output_path else canonical_history_path(lottery)
+    existing = _load_existing(destination, lottery)
+    minimum_draw_number = _incremental_minimum_draw_number(existing) if incremental else None
+    attempts: list[HistorySourceAttempt] = []
+
+    for source_name in source_order:
+        if source_name == RESULT_SOURCE_MIZUHO:
+            collector: CollectorInterface = BrowserMizuhoCollector(
+                start_date=start_date,
+                end_date=end_date,
+                minimum_draw_number=minimum_draw_number,
+                headed=headed,
+                row_timeout_ms=row_timeout_ms,
+            )
+        elif source_name == RESULT_SOURCE_SECONDARY:
+            collector = SMBCResultSource(
+                start_date=start_date,
+                end_date=end_date,
+                minimum_draw_number=minimum_draw_number,
+            )
+        else:
+            raise ResearchValidationError(f"unknown result source: {source_name}")
+
+        try:
+            result = update_history(destination, lottery, collector, existing_draws=existing)
+        except ResearchValidationError as exc:
+            attempts.append(
+                HistorySourceAttempt(
+                    source=source_name,
+                    result=HISTORY_UPDATE_SOURCE_FAILURE,
+                    error=str(exc),
+                )
+            )
+            continue
+
+        attempts.append(
+            HistorySourceAttempt(source=source_name, result=result.update_status, error=None)
+        )
+        return _with_source_metadata(
+            result,
+            attempts=tuple(attempts),
+            selected_source=source_name,
+            fallback_used=len(attempts) > 1,
+        )
+
+    errors = "; ".join(f"{attempt.source}: {attempt.error}" for attempt in attempts)
+    raise ResearchValidationError(
+        f"all automated result sources failed; manual result entry required: {errors}"
+    )
+
+
 def bootstrap_mizuho_history_with_browser(
     lottery: LotteryDefinition,
     *,
@@ -126,6 +208,52 @@ def bootstrap_mizuho_history_with_browser(
         row_timeout_ms=row_timeout_ms,
     )
     return update_history(destination, lottery, collector, existing_draws=existing)
+
+
+def append_manual_result(
+    lottery: LotteryDefinition,
+    *,
+    draw_number: int,
+    draw_date: date,
+    main_numbers: tuple[int, ...],
+    bonus_numbers: tuple[int, ...],
+    output_path: str | Path | None = None,
+    confirmed: bool = False,
+) -> HistoryUpdateResult:
+    if not confirmed:
+        raise ResearchValidationError("manual result entry requires --confirm-manual")
+    destination = Path(output_path) if output_path else canonical_history_path(lottery)
+    existing = _load_existing(destination, lottery)
+    now = datetime.now(UTC)
+    draw = HistoricalDraw(
+        lottery=lottery,
+        draw_number=draw_number,
+        draw_date=draw_date,
+        main_numbers=main_numbers,
+        bonus_numbers=bonus_numbers,
+        source=RESULT_SOURCE_MANUAL,
+        source_url="manual:cli",
+        retrieved_at=now,
+        content_hash=f"manual:{lottery.code}:{draw_number}:{draw_date.isoformat()}",
+    )
+    result = update_history(
+        destination,
+        lottery,
+        _StaticDrawCollector((draw,)),
+        existing_draws=existing,
+    )
+    return _with_source_metadata(
+        result,
+        attempts=(
+            HistorySourceAttempt(
+                source=RESULT_SOURCE_MANUAL,
+                result=result.update_status,
+                error=None,
+            ),
+        ),
+        selected_source=RESULT_SOURCE_MANUAL,
+        fallback_used=False,
+    )
 
 
 def update_history(
@@ -153,6 +281,38 @@ def update_history(
         appended_count=appended_count,
         unchanged_count=unchanged_count,
         verification=verification,
+        update_status=HISTORY_UPDATE_NEW_RESULT if appended_count else HISTORY_UPDATE_NO_NEW_RESULT,
+    )
+
+
+class _StaticDrawCollector(CollectorInterface):
+    def __init__(self, draws: tuple[HistoricalDraw, ...]) -> None:
+        self.draws = draws
+
+    def collect(self, lottery: LotteryDefinition) -> tuple[HistoricalDraw, ...]:
+        return tuple(draw for draw in self.draws if draw.lottery.code == lottery.code)
+
+
+def _with_source_metadata(
+    result: HistoryUpdateResult,
+    *,
+    attempts: tuple[HistorySourceAttempt, ...],
+    selected_source: str | None,
+    fallback_used: bool,
+) -> HistoryUpdateResult:
+    return HistoryUpdateResult(
+        output_path=result.output_path,
+        fetched_count=result.fetched_count,
+        existing_count=result.existing_count,
+        written_count=result.written_count,
+        appended_count=result.appended_count,
+        unchanged_count=result.unchanged_count,
+        verification=result.verification,
+        update_status=result.update_status,
+        source_attempts=attempts,
+        selected_source=selected_source,
+        fallback_used=fallback_used,
+        warnings=result.warnings,
     )
 
 

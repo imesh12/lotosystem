@@ -1,0 +1,99 @@
+{
+  "config": {
+    "candidate_pool_size": 50,
+    "ml_min_training_draws": 100,
+    "ml_refit_interval": 25
+  },
+  "cost_yen": 600,
+  "dataset_hash": "0aa410bccf8f7e595ce092334211522438d70ddd4fdf808b25ee79fb6526f99a",
+  "evaluation": null,
+  "feature_group": "gap_only",
+  "feature_names": [
+    "current_gap",
+    "mean_gap",
+    "gap_std",
+    "max_gap"
+  ],
+  "feature_version": "number-features-v2",
+  "generated_at": "2026-08-24T01:08:25.066420+00:00",
+  "gross_winnings_yen": null,
+  "latest_source_draw_date": "2026-08-20",
+  "latest_source_draw_number": 2130,
+  "lottery": "LOTO6",
+  "model": "random_forest",
+  "model_parameters": {
+    "bootstrap": true,
+    "ccp_alpha": 0.0,
+    "class_weight": "balanced_subsample",
+    "criterion": "gini",
+    "max_depth": 6,
+    "max_features": "sqrt",
+    "max_leaf_nodes": null,
+    "max_samples": null,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 10,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "n_estimators": 10,
+    "n_jobs": 1,
+    "oob_score": false,
+    "random_state": 123456,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "portfolio_method": "top_ranked",
+  "portfolio_version": "two-ticket-portfolio-v1",
+  "schema_version": "stage10-production-prediction-v1",
+  "seed": 123456,
+  "sklearn_version": "1.9.0",
+  "status": "PENDING",
+  "strategy": "conservative_stage09_selection",
+  "target_draw_date": "2026-08-24",
+  "target_draw_number": 2131,
+  "ticket_price_yen": 200,
+  "tickets": [
+    {
+      "numbers": [
+        2,
+        7,
+        21,
+        27,
+        35,
+        42
+      ],
+      "score": 3.1268296898427757,
+      "ticket_index": 1
+    },
+    {
+      "numbers": [
+        10,
+        15,
+        22,
+        30,
+        37,
+        38
+      ],
+      "score": 3.034576856712645,
+      "ticket_index": 2
+    },
+    {
+      "numbers": [
+        13,
+        16,
+        17,
+        25,
+        28,
+        29
+      ],
+      "score": 3.007138748521008,
+      "ticket_index": 3
+    }
+  ],
+  "tickets_per_draw": 3,
+  "warnings": [
+    "Paper-trading record only; no ticket purchase is performed.",
+    "Generated tickets are research outputs, not guaranteed winning numbers.",
+    "Payout amounts and ROI are not calculated."
+  ]
+}

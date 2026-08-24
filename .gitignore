@@ -40,6 +40,10 @@ data/processed/*
 data/exports/*
 !data/exports/.gitkeep
 
+# Local operational logs and backups
+data/logs/
+backups/
+
 # Generated/trained models
 models/*
 !models/.gitkeep
