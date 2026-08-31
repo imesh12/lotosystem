@@ -1,0 +1,79 @@
+{
+  "actual_bonus_numbers": [
+    4
+  ],
+  "actual_main_numbers": [
+    9,
+    15,
+    16,
+    19,
+    31,
+    32
+  ],
+  "draw_date": "2026-08-27",
+  "draw_number": 2132,
+  "financial_status": "COMPLETE",
+  "lottery": "LOTO6",
+  "paper_gross_winnings_yen": 0,
+  "paper_net_yen": -600,
+  "paper_total_cost_yen": 600,
+  "payouts": [],
+  "prediction_dataset_hash": "2a04fb1ac7315c2ec047fcd6179486ce2a40a0b184ea2d321dc7fc505c014457",
+  "prediction_generated_at": "2026-08-24T15:00:24.771839+00:00",
+  "prediction_record_path": "data\\predictions\\LOTO6\\2132.json",
+  "schema_version": "stage12-paper-settlement-v1",
+  "settled_at": "2026-08-31T01:44:36.299532+00:00",
+  "ticket_count": 3,
+  "ticket_price_yen": 200,
+  "tickets": [
+    {
+      "bonus_match_count": 0,
+      "main_match_count": 0,
+      "numbers": [
+        2,
+        7,
+        10,
+        21,
+        35,
+        42
+      ],
+      "payout_yen": 0,
+      "prize_tier": "NO_PRIZE",
+      "ticket_index": 1
+    },
+    {
+      "bonus_match_count": 1,
+      "main_match_count": 1,
+      "numbers": [
+        4,
+        16,
+        22,
+        27,
+        37,
+        38
+      ],
+      "payout_yen": 0,
+      "prize_tier": "NO_PRIZE",
+      "ticket_index": 2
+    },
+    {
+      "bonus_match_count": 0,
+      "main_match_count": 1,
+      "numbers": [
+        3,
+        12,
+        13,
+        15,
+        30,
+        41
+      ],
+      "payout_yen": 0,
+      "prize_tier": "NO_PRIZE",
+      "ticket_index": 3
+    }
+  ],
+  "warnings": [
+    "Paper-trading settlement only; no ticket purchase is recorded.",
+    "paper_gross_winnings_yen and paper_net_yen are simulated accounting fields."
+  ]
+}

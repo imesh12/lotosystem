@@ -40,6 +40,7 @@ from backend.app.research.settlement import (
     financial_summary,
     load_settlement,
     save_settlement,
+    settle_evaluated_predictions,
     settlement_path,
 )
 
@@ -263,6 +264,59 @@ def test_conflicting_payout_and_completed_settlement_rejected(tmp_path: Path) ->
             settlement_root=tmp_path,
             confirmed=True,
         )
+
+
+def test_settlement_reconciliation_skips_existing_completed_and_creates_missing(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    first_draw = HistoricalDraw(LOTO6, 2131, date(2026, 8, 24), (1, 2, 3, 4, 5, 6), (7,))
+    second_draw = HistoricalDraw(LOTO6, 2132, date(2026, 8, 27), (9, 15, 16, 19, 31, 32), (4,))
+    prediction_root = tmp_path / "predictions"
+    settlement_root = tmp_path / "settlements"
+    first_record = _record_for_tickets(LOTO6, first_draw, ((1, 2, 3, 8, 9, 10),))
+    second_record = _record_for_tickets(
+        LOTO6,
+        second_draw,
+        (
+            (2, 7, 10, 21, 35, 42),
+            (4, 16, 22, 27, 37, 38),
+            (3, 12, 13, 15, 30, 41),
+        ),
+    )
+    save_prediction_record(first_record, prediction_root / "LOTO6" / "2131.json")
+    save_prediction_record(second_record, prediction_root / "LOTO6" / "2132.json")
+    completed = build_settlement(
+        first_record,
+        LOTO6,
+        str(prediction_root / "LOTO6" / "2131.json"),
+        _payouts(LOTO6, 2131, {"5th": 1_000}),
+    )
+    save_settlement(completed, settlement_path(settlement_root, LOTO6, 2131))
+    monkeypatch.setattr(
+        "backend.app.research.settlement.collect_smbc_draw_payouts",
+        lambda lottery, draw_number: (
+            _payouts(lottery, draw_number, {"5th": 2_000}) if draw_number == 2131 else ()
+        ),
+    )
+
+    first_paths = settle_evaluated_predictions(
+        LOTO6,
+        prediction_root=prediction_root,
+        settlement_root=settlement_root,
+    )
+    second_paths = settle_evaluated_predictions(
+        LOTO6,
+        prediction_root=prediction_root,
+        settlement_root=settlement_root,
+    )
+
+    assert first_paths == (str(settlement_path(settlement_root, LOTO6, 2132)),)
+    assert second_paths == ()
+    repaired = load_settlement(settlement_path(settlement_root, LOTO6, 2132))
+    assert repaired.paper_total_cost_yen == 600
+    assert repaired.paper_gross_winnings_yen == 0
+    assert repaired.paper_net_yen == -600
 
 
 def test_financial_summary_all_time_date_month_and_combined(tmp_path: Path) -> None:

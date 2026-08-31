@@ -1,0 +1,47 @@
+{
+  "all_time": {
+    "draws_evaluated": 3,
+    "lottery": "ALL",
+    "paper_gross_winnings_yen": 0,
+    "paper_net_yen": -1800,
+    "paper_return_ratio": 0.0,
+    "paper_total_cost_yen": 1800,
+    "payout_pending_draws": 0,
+    "prize_tier_counts": {
+      "NO_PRIZE": 9
+    },
+    "tickets": 9,
+    "winning_ticket_count": 0
+  },
+  "lotteries": {
+    "LOTO6": {
+      "draws_evaluated": 2,
+      "lottery": "LOTO6",
+      "paper_gross_winnings_yen": 0,
+      "paper_net_yen": -1200,
+      "paper_return_ratio": 0.0,
+      "paper_total_cost_yen": 1200,
+      "payout_pending_draws": 0,
+      "prize_tier_counts": {
+        "NO_PRIZE": 6
+      },
+      "tickets": 6,
+      "winning_ticket_count": 0
+    },
+    "MINI_LOTO": {
+      "draws_evaluated": 1,
+      "lottery": "MINI_LOTO",
+      "paper_gross_winnings_yen": 0,
+      "paper_net_yen": -600,
+      "paper_return_ratio": 0.0,
+      "paper_total_cost_yen": 600,
+      "payout_pending_draws": 0,
+      "prize_tier_counts": {
+        "NO_PRIZE": 3
+      },
+      "tickets": 3,
+      "winning_ticket_count": 0
+    }
+  },
+  "schema_version": "stage12-paper-financial-ledger-v1"
+}

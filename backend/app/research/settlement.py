@@ -86,11 +86,16 @@ def settle_evaluated_predictions(
         record = load_prediction_record(path)
         if record.status != PREDICTION_STATUS_EVALUATED:
             continue
+        destination = settlement_path(settlement_root, lottery, record.target_draw_number)
+        if destination.exists():
+            existing = load_settlement(destination)
+            if existing.financial_status == FINANCIAL_STATUS_COMPLETE:
+                continue
         payouts = _try_collect_payouts(lottery, record.target_draw_number)
         settlement = build_settlement(record, lottery, str(path), payouts)
         saved = save_settlement(
             settlement,
-            settlement_path(settlement_root, lottery, record.target_draw_number),
+            destination,
         )
         paths.append(str(saved))
     write_financial_ledger(settlement_root)
@@ -329,7 +334,7 @@ def _with_payouts(
 def _try_collect_payouts(lottery: LotteryDefinition, draw_number: int) -> tuple[DrawPayout, ...]:
     try:
         return collect_smbc_draw_payouts(lottery, draw_number)
-    except ResearchValidationError:
+    except (KeyError, ResearchValidationError, ValueError):
         return ()
 
 

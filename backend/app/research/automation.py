@@ -42,7 +42,11 @@ from backend.app.research.production import (
     prediction_lottery_dir,
 )
 from backend.app.research.settings import SETTINGS_PATH, load_settings, lottery_settings
-from backend.app.research.settlement import FINANCIAL_STATUS_PAYOUT_PENDING, SETTLEMENT_ROOT
+from backend.app.research.settlement import (
+    FINANCIAL_STATUS_PAYOUT_PENDING,
+    SETTLEMENT_ROOT,
+    settle_evaluated_predictions,
+)
 
 AUTOMATION_ROOT = Path("data") / "automation"
 AUTOMATION_TIMEZONE = "Asia/Tokyo"
@@ -156,7 +160,12 @@ def run_automation_once(
                     current=current,
                 )
             else:
-                payload = _no_action_payload(selected, planned)
+                payload = _no_action_payload(
+                    selected,
+                    planned,
+                    prediction_root=prediction_root,
+                    settlement_root=settlement_root,
+                )
             payload = _with_notifications(
                 selected,
                 payload,
@@ -403,8 +412,38 @@ def _lottery_status(
     }
 
 
-def _no_action_payload(lottery: LotteryDefinition, planned: dict[str, Any]) -> dict[str, Any]:
+def _no_action_payload(
+    lottery: LotteryDefinition,
+    planned: dict[str, Any],
+    *,
+    prediction_root: str | Path,
+    settlement_root: str | Path,
+) -> dict[str, Any]:
+    reconciled_settlements = settle_evaluated_predictions(
+        lottery,
+        prediction_root=prediction_root,
+        settlement_root=settlement_root,
+    )
     return {
+        "lottery": str(lottery.code),
+        "action": ACTION_NO_ACTION,
+        "result_source_status": None,
+        "history_update": {
+            "previous_latest_draw": planned["latest_history"]["latest_draw_number"],
+            "new_latest_draw": planned["latest_history"]["latest_draw_number"],
+            "appended": 0,
+        },
+        "prediction_evaluation": {"evaluated": ()},
+        "settlement": {"paths": reconciled_settlements},
+        "next_prediction": planned["pending_prediction"],
+        "next_run_at": planned["next_run_at"],
+        "warnings": planned["warnings"],
+        "errors": (),
+    }
+
+
+def _disabled_payload(lottery: LotteryDefinition, planned: dict[str, Any]) -> dict[str, Any]:
+    payload = {
         "lottery": str(lottery.code),
         "action": ACTION_NO_ACTION,
         "result_source_status": None,
@@ -420,10 +459,6 @@ def _no_action_payload(lottery: LotteryDefinition, planned: dict[str, Any]) -> d
         "warnings": planned["warnings"],
         "errors": (),
     }
-
-
-def _disabled_payload(lottery: LotteryDefinition, planned: dict[str, Any]) -> dict[str, Any]:
-    payload = _no_action_payload(lottery, planned)
     warnings = tuple((*payload["warnings"], "lottery automation is disabled in settings"))
     return {**payload, "settings_enabled": False, "warnings": warnings}
 

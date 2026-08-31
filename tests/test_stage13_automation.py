@@ -30,8 +30,12 @@ from backend.app.research.operational_cycle import (
     CycleNextPredictionSummary,
     OperationalCycleResult,
 )
-from backend.app.research.production import generate_next_prediction
-from backend.app.research.settlement import FINANCIAL_STATUS_PAYOUT_PENDING
+from backend.app.research.production import evaluate_pending_predictions, generate_next_prediction
+from backend.app.research.settlement import (
+    FINANCIAL_STATUS_PAYOUT_PENDING,
+    load_settlement,
+    settlement_path,
+)
 
 
 def _draws(
@@ -261,6 +265,57 @@ def test_auto_run_no_new_result_and_second_run_are_idempotent(
     assert calls == 2
     assert first["lotteries"][0]["action"] == ACTION_CHECK_RESULT
     assert second["lotteries"][0]["history_update"]["appended"] == 0
+
+
+def test_auto_run_no_action_reconciles_evaluated_prediction_missing_settlement(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    draws = _draws(LOTO6, start_number=2000, count=112, start_date=date(2025, 9, 25))
+    history = _patch_history(monkeypatch, tmp_path, LOTO6, draws)
+    prediction_root = tmp_path / "predictions"
+    settlement_root = tmp_path / "settlements"
+    generated = generate_next_prediction(
+        draws[:-1],
+        LOTO6,
+        ResearchConfig(seed=123456),
+        tickets_per_draw=3,
+        prediction_root=prediction_root,
+    )
+    evaluate_pending_predictions(draws, LOTO6, prediction_root=prediction_root)
+    generate_next_prediction(
+        draws,
+        LOTO6,
+        ResearchConfig(seed=123456),
+        tickets_per_draw=3,
+        prediction_root=prediction_root,
+    )
+    monkeypatch.setattr("backend.app.research.settlement.collect_smbc_draw_payouts", lambda *_: ())
+
+    first = run_automation_once(
+        lottery=LOTO6,
+        prediction_root=prediction_root,
+        settlement_root=settlement_root,
+        automation_root=tmp_path / "automation",
+        notification_root=tmp_path / "notifications",
+        now=datetime.fromisoformat(f"{generated.record.target_draw_date}T12:00:00+09:00"),
+    )
+    run_automation_once(
+        lottery=LOTO6,
+        prediction_root=prediction_root,
+        settlement_root=settlement_root,
+        automation_root=tmp_path / "automation",
+        notification_root=tmp_path / "notifications",
+        now=datetime.fromisoformat(f"{generated.record.target_draw_date}T12:01:00+09:00"),
+    )
+
+    expected_path = settlement_path(settlement_root, LOTO6, generated.record.target_draw_number)
+    settlement = load_settlement(expected_path)
+    assert history.exists()
+    assert first["lotteries"][0]["action"] == ACTION_NO_ACTION
+    assert first["lotteries"][0]["settlement"]["paths"] == (str(expected_path),)
+    assert tuple((settlement_root / "LOTO6").glob("*.json")) == (expected_path,)
+    assert settlement.paper_total_cost_yen == 600
 
 
 def test_source_failure_returns_retry_without_mutation(
