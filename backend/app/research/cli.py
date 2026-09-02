@@ -23,6 +23,11 @@ from backend.app.research.candidates import generate_candidates
 from backend.app.research.config import CandidateStrategy, ResearchConfig
 from backend.app.research.data import load_draws_csv
 from backend.app.research.exceptions import ResearchValidationError
+from backend.app.research.extra_trees_evaluation import (
+    run_stage20_extra_trees_evaluation,
+    save_stage20_extra_trees_result,
+    sync_stage20_result_file_with_ledger,
+)
 from backend.app.research.feature_evaluation import (
     run_stage08_feature_evaluation,
     save_stage08_feature_evaluation,
@@ -49,6 +54,11 @@ from backend.app.research.operational_cycle import (
     cycle_result_payload,
     run_post_draw_cycle,
 )
+from backend.app.research.pair_network import (
+    run_stage22_pair_network_evaluation,
+    save_stage22_result,
+    save_stage22_summary,
+)
 from backend.app.research.persistence import save_research_result, to_jsonable
 from backend.app.research.pipeline import run_research
 from backend.app.research.portfolio_evaluation import (
@@ -59,9 +69,23 @@ from backend.app.research.production import (
     evaluate_pending_predictions,
     generate_next_prediction,
 )
+from backend.app.research.prospective import (
+    DEFAULT_PROSPECTIVE_RANDOM_REPLICATIONS,
+    prospective_evaluate,
+    prospective_summary,
+)
 from backend.app.research.settlement import (
     add_manual_payout,
     financial_summary,
+)
+from backend.app.research.shadow import (
+    STATUS_ACTIVE_SHADOW,
+    evaluate_shadow_predictions,
+    generate_shadow_prediction,
+    load_default_history,
+    register_shadow_challenger,
+    shadow_registry_payload,
+    shadow_summary,
 )
 from backend.app.research.statistical_evaluation import (
     DEFAULT_BOOTSTRAP_REPLICATIONS,
@@ -96,6 +120,17 @@ def main() -> None:
     parser.add_argument("--settlement-root")
     parser.add_argument("--automation-root")
     parser.add_argument("--notification-root")
+    parser.add_argument("--experiment-ledger")
+    parser.add_argument("--shadow-root")
+    parser.add_argument("--challenger-id")
+    parser.add_argument("--model")
+    parser.add_argument("--feature-group")
+    parser.add_argument("--portfolio-method", default="top_ranked")
+    parser.add_argument("--minimum-evaluation-draws", type=int, default=10)
+    parser.add_argument("--notes", default="")
+    parser.add_argument("--research-experiment-id")
+    parser.add_argument("--research-experiment-status")
+    parser.add_argument("--override-retired-experiment", action="store_true")
     parser.add_argument("--result-source", action="append", dest="result_sources")
     parser.add_argument("--result-check-hour", type=int)
     parser.add_argument("--retry-interval-minutes", type=int)
@@ -137,6 +172,15 @@ def main() -> None:
         "notification-status",
         "send-pending-notifications",
         "test-email",
+        "prospective-evaluate",
+        "prospective-summary",
+        "extra-trees-evaluation",
+        "shadow-registry",
+        "register-shadow-challenger",
+        "generate-shadow-prediction",
+        "evaluate-shadow-predictions",
+        "shadow-summary",
+        "pair-network-evaluation",
     ):
         subparsers.add_parser(command)
     args = parser.parse_args()
@@ -148,6 +192,11 @@ def main() -> None:
         "notification-status",
         "send-pending-notifications",
         "test-email",
+        "prospective-evaluate",
+        "prospective-summary",
+        "extra-trees-evaluation",
+        "shadow-registry",
+        "shadow-summary",
     }
     lottery = (
         None
@@ -333,6 +382,262 @@ def main() -> None:
         print(json.dumps(to_jsonable(payload), indent=2, sort_keys=True, default=str))
         return
 
+    if args.command == "prospective-evaluate":
+        random_replications = (
+            args.baseline_replications
+            if args.baseline_replications is not None
+            else DEFAULT_PROSPECTIVE_RANDOM_REPLICATIONS
+        )
+        try:
+            payload = prospective_evaluate(
+                lottery=lottery,
+                prediction_root=args.prediction_root or "data/predictions",
+                settlement_root=args.settlement_root or "data/settlements",
+                prospective_root=args.output or "data/prospective",
+                random_replications=random_replications,
+            )
+        except ResearchValidationError as exc:
+            _exit_with_error(str(exc))
+        print(json.dumps(to_jsonable(payload), indent=2, sort_keys=True, default=str))
+        return
+
+    if args.command == "prospective-summary":
+        try:
+            payload = prospective_summary(
+                lottery=lottery,
+                prospective_root=args.output or "data/prospective",
+                save=True,
+            )
+        except ResearchValidationError as exc:
+            _exit_with_error(str(exc))
+        print(json.dumps(to_jsonable(payload), indent=2, sort_keys=True, default=str))
+        return
+
+    if args.command == "shadow-registry":
+        try:
+            payload = shadow_registry_payload(
+                lottery=lottery,
+                root=args.shadow_root or "data/shadow",
+            )
+        except ResearchValidationError as exc:
+            _exit_with_error(str(exc))
+        print(json.dumps(to_jsonable(payload), indent=2, sort_keys=True, default=str))
+        return
+
+    if args.command == "register-shadow-challenger":
+        assert lottery is not None
+        try:
+            challenger = register_shadow_challenger(
+                challenger_id=_required_text(args.challenger_id, "--challenger-id"),
+                lottery=lottery,
+                model=_required_text(args.model, "--model"),
+                feature_group=_required_text(args.feature_group, "--feature-group"),
+                portfolio_method=args.portfolio_method,
+                status=STATUS_ACTIVE_SHADOW,
+                seed=args.seed if args.seed is not None else DEFAULT_STAGE05_SEED,
+                minimum_evaluation_draws=args.minimum_evaluation_draws,
+                notes=args.notes,
+                research_experiment_id=args.research_experiment_id,
+                research_experiment_status=args.research_experiment_status,
+                root=args.shadow_root or "data/shadow",
+                override_retired_experiment=args.override_retired_experiment,
+            )
+        except ResearchValidationError as exc:
+            _exit_with_error(str(exc))
+        print(json.dumps(to_jsonable(challenger), indent=2, sort_keys=True, default=str))
+        return
+
+    if args.command == "generate-shadow-prediction":
+        assert lottery is not None
+        try:
+            shadow_draws = (
+                load_draws_csv(Path(args.data), lottery)
+                if args.data
+                else load_default_history(lottery)
+            )
+            result = generate_shadow_prediction(
+                shadow_draws,
+                lottery,
+                _required_text(args.challenger_id, "--challenger-id"),
+                tickets_per_draw=args.tickets_per_draw,
+                root=args.shadow_root or "data/shadow",
+                ml_min_training_draws=args.ml_min_training_draws,
+            )
+        except ResearchValidationError as exc:
+            _exit_with_error(str(exc))
+        payload = {
+            "status": result.record.status,
+            "lottery": result.record.lottery,
+            "challenger_id": result.record.challenger_id,
+            "target_draw_number": result.record.target_draw_number,
+            "target_draw_date": result.record.target_draw_date,
+            "ticket_count": result.record.ticket_count,
+            "tickets": tuple(ticket.numbers for ticket in result.record.tickets),
+            "record_path": result.record_path,
+            "existing_record": result.existing_record,
+            "prospective_eligible": result.record.prospective_eligible,
+        }
+        print(json.dumps(to_jsonable(payload), indent=2, sort_keys=True, default=str))
+        return
+
+    if args.command == "evaluate-shadow-predictions":
+        assert lottery is not None
+        try:
+            shadow_draws = (
+                load_draws_csv(Path(args.data), lottery)
+                if args.data
+                else load_default_history(lottery)
+            )
+            payload = evaluate_shadow_predictions(
+                shadow_draws,
+                lottery,
+                challenger_id=args.challenger_id,
+                root=args.shadow_root or "data/shadow",
+                prospective_root=args.output or "data/prospective",
+                random_replications=args.baseline_replications
+                if args.baseline_replications is not None
+                else 1000,
+            )
+        except ResearchValidationError as exc:
+            _exit_with_error(str(exc))
+        print(json.dumps(to_jsonable(payload), indent=2, sort_keys=True, default=str))
+        return
+
+    if args.command == "shadow-summary":
+        try:
+            payload = shadow_summary(
+                lottery=lottery,
+                challenger_id=args.challenger_id,
+                root=args.shadow_root or "data/shadow",
+                save=True,
+            )
+        except ResearchValidationError as exc:
+            _exit_with_error(str(exc))
+        print(json.dumps(to_jsonable(payload), indent=2, sort_keys=True, default=str))
+        return
+
+    if args.command == "extra-trees-evaluation" and lottery is None:
+        config = ResearchConfig(
+            frequency_windows=tuple(args.windows or (10, 20, 50, 100)),
+            seed=args.seed if args.seed is not None else DEFAULT_STAGE05_SEED,
+            baseline_replications=args.baseline_replications or 10,
+        )
+        payload = {"status": "ok", "results": {}}
+        output_root = Path(args.output) if args.output else Path("data/exports")
+        ledger_path = args.experiment_ledger or "data/exports/experiments/v2_experiment_ledger.json"
+        result_paths: dict[str, Path] = {}
+        try:
+            for lottery_code, data_path, output_name in (
+                (
+                    "LOTO6",
+                    Path("data/processed/loto6_history.csv"),
+                    "v2_stage20_loto6_extra_trees.json",
+                ),
+                (
+                    "MINI_LOTO",
+                    Path("data/processed/mini_loto_history.csv"),
+                    "v2_stage20_mini_loto_extra_trees.json",
+                ),
+            ):
+                target_lottery = get_lottery_definition(lottery_code)
+                draws = load_draws_csv(data_path, target_lottery)
+                result = run_stage20_extra_trees_evaluation(
+                    draws,
+                    target_lottery,
+                    config,
+                    tickets_per_draw=args.tickets_per_draw,
+                    bootstrap_replications=args.bootstrap_replications,
+                    ml_min_training_draws=args.ml_min_training_draws,
+                    ml_refit_interval=args.ml_refit_interval,
+                    experiment_ledger_path=ledger_path,
+                )
+                result_path = output_root / output_name
+                save_stage20_extra_trees_result(result, result_path)
+                result_paths[lottery_code] = result_path
+                payload["results"][lottery_code] = {
+                    "output": str(result_path),
+                    "dataset_hash": result.dataset_hash,
+                    "champion_mean": result.current_champion.mean_matches,
+                    "extra_trees_mean": result.extra_trees.mean_matches,
+                    "ledger_adjusted_p_value": (
+                        result.extra_trees.comparison_vs_random.ledger_adjusted_p_value
+                    ),
+                    "challenger_status": result.extra_trees.experiment_status,
+                }
+            for lottery_code, result_path in result_paths.items():
+                synced = sync_stage20_result_file_with_ledger(result_path, ledger_path)
+                payload["results"][lottery_code]["ledger_adjusted_p_value"] = synced["extra_trees"][
+                    "comparison_vs_random"
+                ]["ledger_adjusted_p_value"]
+                payload["results"][lottery_code]["challenger_status"] = synced["extra_trees"][
+                    "experiment_status"
+                ]
+            summary_path = output_root / "v2_stage20_extra_trees_summary.json"
+            summary_path.write_text(
+                json.dumps(payload, indent=2, sort_keys=True, default=str),
+                encoding="utf-8",
+            )
+            payload["summary_output"] = str(summary_path)
+        except ResearchValidationError as exc:
+            _exit_with_error(str(exc))
+        print(json.dumps(payload, indent=2, sort_keys=True, default=str))
+        return
+
+    if args.command == "pair-network-evaluation":
+        if lottery is None:
+            _exit_with_error("Stage 22 pair-network evaluation supports MINI_LOTO only")
+        if str(lottery.code) != "MINI_LOTO":
+            _exit_with_error("Stage 22 pair-network evaluation supports MINI_LOTO only")
+        data_path = Path(args.data) if args.data else Path("data/processed/mini_loto_history.csv")
+        output_path = args.output or "data/exports/v2_stage22_mini_loto_pair_network.json"
+        preregistration_path = (
+            Path(output_path).parent / "v2_stage22_pair_network_preregistration.json"
+        )
+        config = ResearchConfig(
+            frequency_windows=tuple(args.windows or (10, 20, 50, 100)),
+            seed=args.seed if args.seed is not None else DEFAULT_STAGE05_SEED,
+            baseline_replications=args.baseline_replications or 10,
+        )
+        try:
+            draws = load_draws_csv(data_path, lottery)
+            result = run_stage22_pair_network_evaluation(
+                draws,
+                lottery,
+                config,
+                tickets_per_draw=args.tickets_per_draw,
+                bootstrap_replications=args.bootstrap_replications,
+                ml_min_training_draws=args.ml_min_training_draws,
+                ml_refit_interval=args.ml_refit_interval,
+                experiment_ledger_path=args.experiment_ledger
+                or "data/exports/experiments/v2_experiment_ledger.json",
+                preregistration_path=preregistration_path,
+            )
+        except ResearchValidationError as exc:
+            _exit_with_error(str(exc))
+        save_stage22_result(result, output_path)
+        save_stage22_summary(
+            result,
+            Path(output_path).parent / "v2_stage22_pair_network_summary.json",
+        )
+        payload = {
+            "status": "ok",
+            "output": output_path,
+            "lottery": result.lottery,
+            "dataset_hash": result.dataset_hash,
+            "champion_mean": result.champion["mean_matches"],
+            "challenger_mean": result.challenger["mean_matches"],
+            "diff_vs_champion": result.challenger_vs_champion.difference,
+            "diff_vs_random": result.challenger_vs_random.difference,
+            "raw_p_value": result.challenger_vs_champion.raw_p_value,
+            "ledger_adjusted_p_value": result.governance["ledger_adjusted_p_value"],
+            "bh_exploratory_p_value": result.governance["bh_exploratory_p_value"],
+            "conclusion": result.governance["unified_conclusion"],
+            "verdict": result.verdict,
+            "lookahead_safe": result.leakage.lookahead_safe,
+        }
+        print(json.dumps(to_jsonable(payload), indent=2, sort_keys=True, default=str))
+        return
+
     if not args.data:
         parser.error(f"{args.command} requires --data")
 
@@ -494,6 +799,48 @@ def main() -> None:
             }
         else:
             payload = to_jsonable(result)
+    elif args.command == "extra-trees-evaluation":
+        try:
+            result = run_stage20_extra_trees_evaluation(
+                draws,
+                lottery,
+                config,
+                tickets_per_draw=args.tickets_per_draw,
+                bootstrap_replications=args.bootstrap_replications,
+                ml_min_training_draws=args.ml_min_training_draws,
+                ml_refit_interval=args.ml_refit_interval,
+                experiment_ledger_path=args.experiment_ledger
+                or "data/exports/experiments/v2_experiment_ledger.json",
+            )
+        except ResearchValidationError as exc:
+            _exit_with_error(str(exc))
+        output_path = args.output or (
+            "data/exports/v2_stage20_loto6_extra_trees.json"
+            if str(lottery.code) == "LOTO6"
+            else "data/exports/v2_stage20_mini_loto_extra_trees.json"
+        )
+        save_stage20_extra_trees_result(result, output_path)
+        payload = {
+            "status": "ok",
+            "output": output_path,
+            "lottery": str(lottery.code),
+            "dataset_hash": result.dataset_hash,
+            "champion_mean": result.current_champion.mean_matches,
+            "extra_trees_mean": result.extra_trees.mean_matches,
+            "diff_vs_random": result.extra_trees.comparison_vs_random.difference,
+            "diff_vs_champion": (
+                result.extra_trees.comparison_vs_champion.difference
+                if result.extra_trees.comparison_vs_champion
+                else None
+            ),
+            "raw_p_value": result.extra_trees.comparison_vs_random.raw_p_value,
+            "ledger_adjusted_p_value": (
+                result.extra_trees.comparison_vs_random.ledger_adjusted_p_value
+            ),
+            "conclusion": result.extra_trees.conclusion,
+            "challenger_status": result.extra_trees.experiment_status,
+            "lookahead_safe": result.leakage.lookahead_safe,
+        }
     elif args.command == "generate-next":
         try:
             result = generate_next_prediction(
