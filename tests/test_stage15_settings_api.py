@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -162,7 +162,7 @@ def test_existing_prediction_immutable_and_future_prediction_uses_new_ticket_cou
     write_canonical_history_csv(draws[:-1], history)
     monkeypatch.setattr("backend.app.research.automation.canonical_history_path", lambda _: history)
     prediction_root = tmp_path / "predictions"
-    generate_next_prediction(
+    generated = generate_next_prediction(
         draws[:-1],
         LOTO6,
         ResearchConfig(seed=123456),
@@ -178,6 +178,7 @@ def test_existing_prediction_immutable_and_future_prediction_uses_new_ticket_cou
         automation_root=tmp_path / "automation",
         notification_root=tmp_path / "notifications",
         settings_path=settings_path,
+        now=datetime.fromisoformat(f"{generated.record.target_draw_date}T12:00:00+09:00"),
     )
     assert existing["lotteries"][0]["next_prediction"]["tickets"] == 3
 
@@ -189,6 +190,7 @@ def test_existing_prediction_immutable_and_future_prediction_uses_new_ticket_cou
         automation_root=tmp_path / "automation",
         notification_root=tmp_path / "notifications",
         settings_path=settings_path,
+        now=datetime.fromisoformat(f"{generated.record.target_draw_date}T12:01:00+09:00"),
     )
 
     assert future["lotteries"][0]["next_prediction"]["tickets"] == 5
@@ -211,6 +213,7 @@ def test_lottery_disabled_skips_automation(
         automation_root=tmp_path / "automation",
         notification_root=tmp_path / "notifications",
         settings_path=settings_path,
+        now=datetime.fromisoformat(f"{draws[-1].draw_date.isoformat()}T12:00:00+09:00"),
     )
 
     assert lottery_settings(MINI_LOTO, path=settings_path).enabled is False
