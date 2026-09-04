@@ -86,6 +86,36 @@ If sales amount is unavailable, the primary endpoint is classified as
 `INCONCLUSIVE`. Raw winner counts alone are not sufficient because more tickets
 sold naturally increases expected winner counts.
 
+## Stage 28B Economic Dataset Acquisition
+
+Stage 28B adds a separate Mini Loto economic-result acquisition path under:
+
+```text
+data/exports/stage28/mini_loto_economic_history.csv
+```
+
+The dataset is separate from canonical draw history and production ledgers. It
+does not modify `data/processed/`, prediction records, settlements, Stage 27
+prospective records, scheduler state, email, or frontend state.
+
+Current source audit:
+
+- Official Mizuho Chrome-saved backnumber HTML available locally provides draw
+  numbers, draw dates, winning numbers, and bonus numbers, but not historical
+  sales amount or prize-tier winner/payout fields in the saved pages inspected.
+- Existing SMBC XML payout ingestion provides prize-tier winner counts and
+  payout amounts for recent processed settlements.
+- Existing local settlements preserve those SMBC winner-count and payout fields
+  where a paper-trading settlement exists.
+- No current local source provides `sales_amount_yen`.
+- No current local source provides actual purchased-number distribution,
+  winning ticket combinations, Quick Pick/manual selection ratio, or official
+  player-choice popularity rankings.
+
+Because `sales_amount_yen` is still unavailable, Stage 28's preregistered
+sales-normalized primary endpoint remains `INCONCLUSIVE`. Raw first-prize
+winner counts are not substituted for the primary analysis.
+
 ## Conditional Payout Illustration
 
 Conditional payout examples use a fixed illustrative prize pool:
