@@ -30,6 +30,7 @@ from backend.app.research.production import (
     generate_next_prediction,
     load_prediction_record,
 )
+from backend.app.research.stage27_prospective_signals import initialize_stage27
 
 
 def _draws(
@@ -132,6 +133,91 @@ def test_cycle_appends_evaluates_pending_and_generates_next(tmp_path: Path) -> N
     assert "evaluated_at" in evaluated.evaluation
     assert evaluated.generated_at
     assert evaluated.cost_yen == 600
+    assert result.stage27 is None
+
+
+def test_loto6_cycle_does_not_invoke_stage27(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    history = tmp_path / "loto6.csv"
+    draws = _draws(LOTO6, start_number=2000, count=110, start_date=date(2025, 1, 2))
+    _write_history(history, draws)
+
+    def fail_if_called(*args: object, **kwargs: object) -> None:
+        raise AssertionError("Stage 27 must not run for LOTO6")
+
+    monkeypatch.setattr(
+        "backend.app.research.operational_cycle._stage27_cycle_payload",
+        fail_if_called,
+    )
+
+    result = run_post_draw_cycle(
+        LOTO6,
+        _config(),
+        history_path=history,
+        prediction_root=tmp_path / "predictions",
+        settlement_root=tmp_path / "settlements",
+        tickets_per_draw=3,
+        history_updater=_FakeUpdater(history, ()),
+    )
+
+    assert result.stage27 is None
+
+
+def test_mini_cycle_returns_stage27_payload_and_freezes_next_target(tmp_path: Path) -> None:
+    history = tmp_path / "mini.csv"
+    draws = _draws(MINI_LOTO, start_number=900, count=110, start_date=date(2024, 1, 2))
+    _write_history(history, draws)
+
+    result = run_post_draw_cycle(
+        MINI_LOTO,
+        _config(),
+        history_path=history,
+        prediction_root=tmp_path / "predictions",
+        settlement_root=tmp_path / "settlements",
+        tickets_per_draw=3,
+        history_updater=_FakeUpdater(history, ()),
+    )
+
+    assert result.stage27 is not None
+    assert result.stage27["lottery"] == "MINI_LOTO"
+    assert result.stage27["freeze"]["record"]["draw_number"] == draws[-1].draw_number + 1
+    assert result.stage27["freeze"]["target_result_absent"] is True
+    assert (tmp_path / "prospective" / "stage27" / "MINI_LOTO").exists()
+
+
+def test_mini_stage27_failure_becomes_warning_without_rolling_back_cycle(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    history = tmp_path / "mini.csv"
+    draws = _draws(MINI_LOTO, start_number=900, count=110, start_date=date(2024, 1, 2))
+    _write_history(history, draws)
+
+    def fail_stage27(*args: object, **kwargs: object) -> None:
+        raise ResearchValidationError("stage27 integrity conflict")
+
+    monkeypatch.setattr(
+        "backend.app.research.stage27_prospective_signals.run_stage27_cycle",
+        fail_stage27,
+    )
+
+    result = run_post_draw_cycle(
+        MINI_LOTO,
+        _config(),
+        history_path=history,
+        prediction_root=tmp_path / "predictions",
+        settlement_root=tmp_path / "settlements",
+        tickets_per_draw=3,
+        history_updater=_FakeUpdater(history, ()),
+    )
+
+    assert result.errors == ()
+    assert result.next_prediction.created is True
+    assert result.stage27 is not None
+    assert result.stage27["status"] == "ERROR"
+    assert "Stage 27 prospective tracking skipped" in result.warnings[0]
 
 
 def test_cycle_no_new_result_is_idempotent_and_preserves_pending(tmp_path: Path) -> None:
@@ -180,6 +266,11 @@ def test_cycle_catch_up_does_not_fabricate_retroactive_prediction(tmp_path: Path
     history = tmp_path / "mini.csv"
     draws = _draws(MINI_LOTO, start_number=900, count=113, start_date=date(2024, 1, 2))
     _write_history(history, draws[:-3])
+    initialize_stage27(
+        draws[:-3],
+        MINI_LOTO,
+        root=tmp_path / "prospective" / "stage27",
+    )
     generate_next_prediction(
         draws[:-3],
         MINI_LOTO,
@@ -203,6 +294,12 @@ def test_cycle_catch_up_does_not_fabricate_retroactive_prediction(tmp_path: Path
     assert result.next_prediction.draw == draws[-1].draw_number
     missing_retroactive = tmp_path / "predictions" / "MINI_LOTO" / f"{draws[-2].draw_number}.json"
     assert not missing_retroactive.exists()
+    assert result.stage27 is not None
+    assert result.stage27["freeze"]["record"]["draw_number"] == draws[-1].draw_number
+    assert result.stage27["freeze"]["missed_draws"] == [
+        draws[-3].draw_number,
+        draws[-2].draw_number,
+    ]
 
 
 def test_cycle_preserves_existing_future_pending_with_changed_ticket_count(

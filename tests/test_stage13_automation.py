@@ -116,6 +116,7 @@ def _cycle_result(
             record_path="prediction.json",
             created=appended > 0,
         ),
+        stage27=None,
         cycle_record_path="cycle.json",
         errors=(),
         warnings=(),

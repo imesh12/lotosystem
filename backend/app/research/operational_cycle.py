@@ -63,6 +63,7 @@ class OperationalCycleRecord:
     next_prediction: CycleNextPredictionSummary | None
     errors: tuple[str, ...]
     warnings: tuple[str, ...]
+    stage27: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -76,6 +77,7 @@ class OperationalCycleResult:
     cycle_record_path: str
     errors: tuple[str, ...]
     warnings: tuple[str, ...]
+    stage27: dict[str, Any] | None = None
 
 
 HistoryUpdater = Callable[[LotteryDefinition], HistoryUpdateResult]
@@ -96,6 +98,7 @@ def run_post_draw_cycle(
     result_source_order: tuple[str, ...] | None = None,
     started_at: datetime | None = None,
     history_updater: HistoryUpdater | None = None,
+    stage27_root: str | Path | None = None,
 ) -> OperationalCycleResult:
     started = (started_at or datetime.now(UTC)).astimezone(UTC)
     cycle_id = _cycle_id(lottery, started)
@@ -137,6 +140,19 @@ def run_post_draw_cycle(
             tickets_per_draw=tickets_per_draw,
             prediction_root=prediction_root,
         )
+        stage27 = (
+            _stage27_cycle_payload(
+                updated,
+                lottery,
+                config,
+                prediction_root=prediction_root,
+                stage27_root=stage27_root,
+            )
+            if str(lottery.code) == "MINI_LOTO"
+            else None
+        )
+        if stage27 and stage27.get("warnings"):
+            warnings.extend(str(warning) for warning in stage27["warnings"])
         history = CycleHistorySummary(
             previous_latest_draw=previous_latest,
             new_latest_draw=updated[-1].draw_number if updated else None,
@@ -158,6 +174,7 @@ def run_post_draw_cycle(
             evaluated_predictions=evaluated,
             settlements=settlement_paths,
             next_prediction=next_prediction,
+            stage27=stage27,
             errors=(),
             warnings=tuple(warnings),
         )
@@ -169,6 +186,7 @@ def run_post_draw_cycle(
             evaluated_predictions=evaluated,
             settlements=settlement_paths,
             next_prediction=next_prediction,
+            stage27=stage27,
             cycle_record_path=str(record_path),
             errors=(),
             warnings=tuple(warnings),
@@ -197,6 +215,7 @@ def run_post_draw_cycle(
             evaluated_predictions=(),
             settlements=(),
             next_prediction=None,
+            stage27=None,
             errors=(str(exc),),
             warnings=tuple(warnings),
         )
@@ -269,6 +288,7 @@ def cycle_result_payload(result: OperationalCycleResult) -> dict[str, Any]:
             "tickets": result.next_prediction.tickets,
             "created": result.next_prediction.created,
         },
+        "stage27": result.stage27,
         "cycle_record_path": result.cycle_record_path,
         "errors": result.errors,
         "warnings": result.warnings,
@@ -288,3 +308,39 @@ def _source_attempt_payload(result: HistoryUpdateResult) -> tuple[dict[str, str 
         }
         for attempt in result.source_attempts
     )
+
+
+def _stage27_cycle_payload(
+    draws: tuple[HistoricalDraw, ...],
+    lottery: LotteryDefinition,
+    config: ResearchConfig,
+    *,
+    prediction_root: str | Path,
+    stage27_root: str | Path | None,
+) -> dict[str, Any] | None:
+    if str(lottery.code) != "MINI_LOTO":
+        return None
+    try:
+        from backend.app.research.stage27_prospective_signals import (
+            run_stage27_cycle,
+            stage27_payload,
+        )
+
+        seed = config.seed if config.seed is not None else 123456
+        root = (
+            Path(stage27_root)
+            if stage27_root is not None
+            else _default_stage27_root(prediction_root)
+        )
+        return stage27_payload(run_stage27_cycle(draws, lottery, seed=seed, root=root))
+    except ResearchValidationError as exc:
+        return {
+            "experiment": "stage27_prospective_signal_tracking",
+            "status": "ERROR",
+            "error": str(exc),
+            "warnings": (f"Stage 27 prospective tracking skipped: {exc}",),
+        }
+
+
+def _default_stage27_root(prediction_root: str | Path) -> Path:
+    return Path(prediction_root).parent / "prospective" / "stage27"
