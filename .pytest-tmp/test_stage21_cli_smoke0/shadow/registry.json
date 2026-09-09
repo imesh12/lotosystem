@@ -1,0 +1,30 @@
+{
+  "challengers": [
+    {
+      "challenger_id": "cli-shadow",
+      "config_version": "stage21-shadow-config-v1",
+      "feature_group": "gap_only",
+      "feature_names": [
+        "current_gap",
+        "mean_gap",
+        "gap_std",
+        "max_gap"
+      ],
+      "feature_version": "number-features-v2",
+      "frozen_at": "2026-09-02T01:54:17.571572+00:00",
+      "lottery": "LOTO6",
+      "minimum_evaluation_draws": 10,
+      "model": "test_deterministic",
+      "notes": "",
+      "portfolio_method": "top_ranked",
+      "portfolio_version": "shadow-portfolio-v1",
+      "prospective_start_draw": null,
+      "registered_at": "2026-09-02T01:54:17.571572+00:00",
+      "research_experiment_id": null,
+      "research_experiment_status": null,
+      "seed": 123456,
+      "status": "ACTIVE_SHADOW"
+    }
+  ],
+  "schema_version": "v2-stage21-shadow-registry-v1"
+}

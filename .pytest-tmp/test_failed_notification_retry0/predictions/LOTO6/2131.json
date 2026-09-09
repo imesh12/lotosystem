@@ -1,0 +1,77 @@
+{
+  "config": {},
+  "cost_yen": 200,
+  "dataset_hash": "dataset",
+  "evaluation": {
+    "actual_bonus_numbers": [
+      7
+    ],
+    "actual_draw_date": "2026-08-24",
+    "actual_draw_number": 2131,
+    "actual_main_numbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "best_match_count": 0,
+    "evaluated_at": "2026-08-24T01:00:00+00:00",
+    "gross_winnings_yen": null,
+    "prize_qualified_ticket_count": 0,
+    "ticket_results": [
+      {
+        "bonus_match_count": 0,
+        "main_match_count": 0,
+        "numbers": [
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "prize_category": null,
+        "qualifies_for_prize": false,
+        "ticket_index": 1
+      }
+    ]
+  },
+  "feature_group": "test",
+  "feature_names": [],
+  "feature_version": "test",
+  "generated_at": "2026-08-24T00:00:00+00:00",
+  "gross_winnings_yen": null,
+  "latest_source_draw_date": "2026-08-01",
+  "latest_source_draw_number": 2130,
+  "lottery": "LOTO6",
+  "model": "test",
+  "model_parameters": {},
+  "portfolio_method": "test",
+  "portfolio_version": "test",
+  "schema_version": "stage10-production-prediction-v1",
+  "seed": 123456,
+  "sklearn_version": "test",
+  "status": "EVALUATED",
+  "strategy": "test",
+  "target_draw_date": "2026-08-24",
+  "target_draw_number": 2131,
+  "ticket_price_yen": 200,
+  "tickets": [
+    {
+      "numbers": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "score": 0.0,
+      "ticket_index": 1
+    }
+  ],
+  "tickets_per_draw": 1,
+  "warnings": []
+}

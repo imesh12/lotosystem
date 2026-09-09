@@ -1,0 +1,163 @@
+{
+  "challenger": {
+    "feature_group": "pair_network_v1",
+    "mean_matches": 1.0862068965517242,
+    "model": "logistic_regression",
+    "sample_size": 29
+  },
+  "challenger_vs_champion": {
+    "baseline_value": 0.8103448275862069,
+    "challenger_value": 1.0862068965517242,
+    "difference": 0.27586206896551724,
+    "difference_ci": {
+      "confidence_level": 0.95,
+      "lower": 0.153448275862069,
+      "upper": 0.3793103448275862
+    },
+    "effect_size": {
+      "absolute_difference": 0.27586206896551724,
+      "relative_difference": 0.3404255319148936,
+      "standardized_mean_difference": 0.5321520841901914
+    },
+    "raw_p_value": 0.09090909090909091
+  },
+  "challenger_vs_random": {
+    "baseline_value": 0.9482758620689655,
+    "challenger_value": 1.0862068965517242,
+    "difference": 0.13793103448275862,
+    "difference_ci": {
+      "confidence_level": 0.95,
+      "lower": -0.0439655172413793,
+      "upper": 0.32931034482758625
+    },
+    "effect_size": {
+      "absolute_difference": 0.13793103448275862,
+      "relative_difference": 0.14545454545454545,
+      "standardized_mean_difference": 0.1954127874984126
+    },
+    "raw_p_value": 0.5454545454545454
+  },
+  "champion": {
+    "feature_group": "pair_only",
+    "mean_matches": 0.8103448275862069,
+    "model": "logistic_regression",
+    "sample_size": 29
+  },
+  "configuration": {
+    "bootstrap_replications": 10,
+    "confidence_level": 0.95,
+    "historical_cutoff_draw": 1400,
+    "ml_min_training_draws": 12,
+    "ml_refit_interval": 5,
+    "recent_pair_window": 20,
+    "seed": 123456,
+    "tickets_per_draw": 2
+  },
+  "dataset_hash": "42f54c3308124b244eb6f556db5624580468a4485626ef1332e9722356ae90bf",
+  "dataset_range": {
+    "draw_count": 41,
+    "excluded_after_cutoff": 0,
+    "first_draw_date": "2025-01-07",
+    "first_draw_number": 1360,
+    "last_draw_date": "2025-10-14",
+    "last_draw_number": 1400
+  },
+  "governance": {
+    "bh_exploratory_p_value": 0.09090909090909091,
+    "experiment_id": "V2-EXP-5b14a334340c2b65",
+    "ledger_adjusted_p_value": 0.09090909090909091,
+    "mini_loto_hypothesis_count": 1,
+    "multiple_comparison_method": "Holm; BH exploratory reported separately",
+    "stage_adjusted_p_value": 0.18181818181818182,
+    "unified_conclusion": "weak_signal"
+  },
+  "leakage": {
+    "future_mutation_changes_prediction": false,
+    "lookahead_safe": true,
+    "target_mutation_changes_features": false,
+    "training_dates_strictly_before_target": true
+  },
+  "lottery": "MINI_LOTO",
+  "model": "logistic_regression",
+  "model_parameters": {
+    "C": 1.0,
+    "class_weight": "balanced",
+    "dual": false,
+    "fit_intercept": true,
+    "intercept_scaling": 1,
+    "l1_ratio": 0.0,
+    "max_iter": 250,
+    "n_jobs": null,
+    "penalty": "deprecated",
+    "random_state": 123456,
+    "solver": "liblinear",
+    "tol": 0.0001,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "new_pair_network_features": [
+    "weighted_degree",
+    "normalized_weighted_degree",
+    "neighbor_strength_mean",
+    "neighbor_strength_max",
+    "recent_pair_strength"
+  ],
+  "pair_network_features": [
+    "pair_strength_rate",
+    "weighted_degree",
+    "normalized_weighted_degree",
+    "neighbor_strength_mean",
+    "neighbor_strength_max",
+    "recent_pair_strength"
+  ],
+  "pair_only_baseline_features": [
+    "pair_strength_rate"
+  ],
+  "period_stability": [
+    {
+      "direction": "positive",
+      "mean_match_difference": 0.27586206896551724,
+      "period": "2024-latest",
+      "prize_rate_difference": 0.05172413793103448,
+      "target_draws": 29
+    }
+  ],
+  "portfolio_method": "top_ranked",
+  "preregistration": {
+    "challenger": "logistic_regression + pair_network_v1 + top_ranked",
+    "champion": "logistic_regression + pair_only + top_ranked",
+    "dataset_hash": "42f54c3308124b244eb6f556db5624580468a4485626ef1332e9722356ae90bf",
+    "feature_group": "pair_network_v1",
+    "feature_names": [
+      "pair_strength_rate",
+      "weighted_degree",
+      "normalized_weighted_degree",
+      "neighbor_strength_mean",
+      "neighbor_strength_max",
+      "recent_pair_strength"
+    ],
+    "historical_cutoff": {
+      "excluded_draws": "draws after #1400, including #1401 if present",
+      "last_included_draw": 1400
+    },
+    "lottery": "MINI_LOTO",
+    "primary_comparison": "challenger_vs_champion",
+    "primary_hypothesis": "Pair-network structural information improves prospective number ranking relative to the existing pair_only champion.",
+    "primary_metric": "average main-number matches per ticket in walk-forward evaluation",
+    "schema_version": "v2-stage22-preregistration-v1",
+    "secondary_comparison": "challenger_vs_matched_random"
+  },
+  "schema_version": "v2-stage22-pair-network-v1",
+  "sklearn_version": "1.9.0",
+  "verdict": "KEEP_AS_SHADOW_CANDIDATE",
+  "warnings": [
+    "Stage 22 is historical research only and does not activate a shadow challenger.",
+    "Mini Loto #1401 is excluded by the frozen #1400 historical cutoff.",
+    "Pair-network features are hypotheses, not winning probabilities."
+  ],
+  "win_tie_loss": {
+    "losses": 3,
+    "ties": 14,
+    "wins": 12
+  }
+}

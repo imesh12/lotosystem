@@ -1,0 +1,238 @@
+{
+  "best_deterministic_mean_matches": 0.6666666666666666,
+  "best_deterministic_strategy": "balanced",
+  "configuration": {
+    "bootstrap_replications": 20,
+    "confidence_level": 0.95,
+    "ml_min_training_draws": 8,
+    "ml_refit_interval": 25,
+    "models": {
+      "logistic_regression": {
+        "class_weight": "balanced",
+        "max_iter": 250,
+        "random_state": 123456,
+        "solver": "liblinear"
+      },
+      "random_forest": {
+        "class_weight": "balanced_subsample",
+        "max_depth": 6,
+        "min_samples_leaf": 10,
+        "n_estimators": 10,
+        "n_jobs": 1,
+        "random_state": 123456
+      }
+    },
+    "seed": 123456,
+    "tickets_per_draw": 2
+  },
+  "dataset_hash": "2c4e7912d25149fa3a4ef3d9f03dbc1e35963ec138f746ac66c42195f06b571f",
+  "dataset_range": {
+    "draw_count": 14,
+    "first_draw_date": "2026-01-01",
+    "first_draw_number": 1,
+    "last_draw_date": "2026-04-02",
+    "last_draw_number": 14
+  },
+  "feature_version": "number-features-v1",
+  "leakage": {
+    "future_mutation_changes_prediction": false,
+    "lookahead_safe": true,
+    "target_mutation_changes_features": false,
+    "training_dates_strictly_before_target": true
+  },
+  "lottery": "LOTO6",
+  "models": {
+    "logistic_regression": {
+      "conclusion": "no_evidence",
+      "mean_matches": {
+        "adjusted_p_value": 1.0,
+        "difference": -0.08333333333333333,
+        "difference_ci": {
+          "confidence_level": 0.95,
+          "lower": -1.0083333333333333,
+          "upper": 0.5874999999999997
+        },
+        "effect_size": {
+          "absolute_difference": -0.08333333333333333,
+          "relative_difference": -0.07142857142857142,
+          "standardized_mean_difference": -0.07881104062391006
+        },
+        "random_ci": {
+          "confidence_level": 0.95,
+          "lower": 0.70625,
+          "upper": 1.670833333333333
+        },
+        "random_value": 1.1666666666666667,
+        "raw_p_value": 1.0,
+        "strategy_ci": {
+          "confidence_level": 0.95,
+          "lower": 1.0,
+          "upper": 1.1666666666666667
+        },
+        "strategy_value": 1.0833333333333333
+      },
+      "metrics": {
+        "average_matches_per_ticket": 1.0833333333333333,
+        "draws_evaluated": 6,
+        "match_counts": {
+          "0": 0,
+          "1": 11,
+          "2": 1,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.0,
+          "1": 0.9166666666666666,
+          "2": 0.08333333333333333,
+          "3": 0.0,
+          "3_plus": 0.0,
+          "4": 0.0,
+          "4_plus": 0.0,
+          "5": 0.0,
+          "5_plus": 0.0,
+          "6": 0.0
+        },
+        "prize_category_counts": {},
+        "prize_qualified_rate": 0.0,
+        "tickets_evaluated": 12
+      },
+      "model_name": "logistic_regression",
+      "model_parameters": {
+        "class_weight": "balanced",
+        "max_iter": 250,
+        "random_state": 123456,
+        "solver": "liblinear"
+      },
+      "period_stability": [
+        {
+          "direction": "negative",
+          "mean_match_difference": -0.08333333333333333,
+          "period": "2024-latest",
+          "prize_rate_difference": -0.16666666666666666,
+          "target_draws": 6
+        }
+      ]
+    },
+    "random_forest": {
+      "conclusion": "needs_more_validation",
+      "mean_matches": {
+        "adjusted_p_value": 0.19047619047619047,
+        "difference": 1.3333333333333333,
+        "difference_ci": {
+          "confidence_level": 0.95,
+          "lower": 0.4520833333333334,
+          "upper": 1.8333333333333333
+        },
+        "effect_size": {
+          "absolute_difference": 1.3333333333333333,
+          "relative_difference": 1.1428571428571428,
+          "standardized_mean_difference": 1.414213562373095
+        },
+        "random_ci": {
+          "confidence_level": 0.95,
+          "lower": 0.6229166666666668,
+          "upper": 1.670833333333333
+        },
+        "random_value": 1.1666666666666667,
+        "raw_p_value": 0.09523809523809523,
+        "strategy_ci": {
+          "confidence_level": 0.95,
+          "lower": 2.5,
+          "upper": 2.5
+        },
+        "strategy_value": 2.5
+      },
+      "metrics": {
+        "average_matches_per_ticket": 2.5,
+        "draws_evaluated": 6,
+        "match_counts": {
+          "0": 2,
+          "1": 3,
+          "2": 1,
+          "3": 1,
+          "4": 3,
+          "5": 2,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.16666666666666666,
+          "1": 0.25,
+          "2": 0.08333333333333333,
+          "3": 0.08333333333333333,
+          "3_plus": 0.5,
+          "4": 0.25,
+          "4_plus": 0.4166666666666667,
+          "5": 0.16666666666666666,
+          "5_plus": 0.16666666666666666,
+          "6": 0.0
+        },
+        "prize_category_counts": {
+          "3rd": 2,
+          "4th": 3,
+          "5th": 1
+        },
+        "prize_qualified_rate": 0.5,
+        "tickets_evaluated": 12
+      },
+      "model_name": "random_forest",
+      "model_parameters": {
+        "class_weight": "balanced_subsample",
+        "max_depth": 6,
+        "min_samples_leaf": 10,
+        "n_estimators": 10,
+        "n_jobs": 1,
+        "random_state": 123456
+      },
+      "period_stability": [
+        {
+          "direction": "positive",
+          "mean_match_difference": 1.3333333333333333,
+          "period": "2024-latest",
+          "prize_rate_difference": 0.3333333333333333,
+          "target_draws": 6
+        }
+      ]
+    }
+  },
+  "random_metrics": {
+    "average_matches_per_ticket": 1.1666666666666667,
+    "draws_evaluated": 6,
+    "match_counts": {
+      "0": 4,
+      "1": 4,
+      "2": 2,
+      "3": 2,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    "match_rates": {
+      "0": 0.3333333333333333,
+      "1": 0.3333333333333333,
+      "2": 0.16666666666666666,
+      "3": 0.16666666666666666,
+      "3_plus": 0.16666666666666666,
+      "4": 0.0,
+      "4_plus": 0.0,
+      "5": 0.0,
+      "5_plus": 0.0,
+      "6": 0.0
+    },
+    "prize_category_counts": {
+      "5th": 2
+    },
+    "prize_qualified_rate": 0.16666666666666666,
+    "tickets_evaluated": 12
+  },
+  "schema_version": "stage07-ml-baseline-v1",
+  "sklearn_version": "1.9.0",
+  "warnings": [
+    "ML scores are ranking values, not winning probabilities.",
+    "Historical ML performance does not guarantee future lottery outcomes.",
+    "Bonus numbers are not positive training targets.",
+    "Payout amounts and ROI are not evaluated."
+  ]
+}

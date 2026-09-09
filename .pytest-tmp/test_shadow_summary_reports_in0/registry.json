@@ -1,0 +1,27 @@
+{
+  "challengers": [
+    {
+      "challenger_id": "shadow-a",
+      "config_version": "stage21-shadow-config-v1",
+      "feature_group": "pair_only",
+      "feature_names": [
+        "pair_strength_rate"
+      ],
+      "feature_version": "number-features-v2",
+      "frozen_at": "2026-01-01T00:00:00+00:00",
+      "lottery": "MINI_LOTO",
+      "minimum_evaluation_draws": 5,
+      "model": "test_deterministic",
+      "notes": "",
+      "portfolio_method": "top_ranked",
+      "portfolio_version": "shadow-portfolio-v1",
+      "prospective_start_draw": null,
+      "registered_at": "2026-01-01T00:00:00+00:00",
+      "research_experiment_id": null,
+      "research_experiment_status": null,
+      "seed": 123456,
+      "status": "ACTIVE_SHADOW"
+    }
+  ],
+  "schema_version": "v2-stage21-shadow-registry-v1"
+}

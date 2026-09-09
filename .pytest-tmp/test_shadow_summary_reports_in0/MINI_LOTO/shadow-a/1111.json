@@ -1,0 +1,222 @@
+{
+  "challenger_id": "shadow-a",
+  "champion_comparison": null,
+  "dataset_hash": "05d661690548b61447ca4388b515abf61741b5c5dfe7b454889d6a559041a56a",
+  "evaluation": {
+    "actual_bonus_numbers": [
+      1
+    ],
+    "actual_draw_date": "2026-02-16",
+    "actual_draw_number": 1111,
+    "actual_main_numbers": [
+      8,
+      12,
+      16,
+      20,
+      24
+    ],
+    "best_ticket_matches": 1,
+    "evaluated_at": "2026-09-02T01:54:16.166581+00:00",
+    "prize_qualified_tickets": 0,
+    "ticket_results": [
+      {
+        "bonus_match": 1,
+        "main_matches": 0,
+        "numbers": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "payout_yen": null,
+        "prize_tier": null,
+        "qualifies_for_prize": false,
+        "ticket_index": 1
+      },
+      {
+        "bonus_match": 0,
+        "main_matches": 1,
+        "numbers": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "payout_yen": null,
+        "prize_tier": null,
+        "qualifies_for_prize": false,
+        "ticket_index": 2
+      }
+    ],
+    "total_portfolio_matches": 1
+  },
+  "feature_group": "pair_only",
+  "feature_names": [
+    "pair_strength_rate"
+  ],
+  "feature_version": "number-features-v2",
+  "generated_at": "2025-01-01T00:00:00+00:00",
+  "latest_source_draw_date": "2026-02-09",
+  "latest_source_draw_number": 1110,
+  "lottery": "MINI_LOTO",
+  "model": "test_deterministic",
+  "model_parameters": {
+    "random_state": 123456,
+    "type": "test_deterministic"
+  },
+  "portfolio_method": "top_ranked",
+  "portfolio_version": "shadow-portfolio-v1",
+  "prospective_eligible": true,
+  "random_control": {
+    "challenger_best_percentile": 0.7,
+    "challenger_minus_random_total": -0.8999999999999999,
+    "challenger_total_percentile": 0.5,
+    "random_mean_best_ticket_matches": 1.2,
+    "random_mean_total_portfolio_matches": 1.9,
+    "random_prize_qualified_rate": 0.2,
+    "replications": 10,
+    "seed": 123456,
+    "tickets_per_draw": 2
+  },
+  "ranking": {
+    "rank_by_number": {
+      "1": 1,
+      "10": 10,
+      "11": 11,
+      "12": 12,
+      "13": 13,
+      "14": 14,
+      "15": 15,
+      "16": 16,
+      "17": 17,
+      "18": 18,
+      "19": 19,
+      "2": 2,
+      "20": 20,
+      "21": 21,
+      "22": 22,
+      "23": 23,
+      "24": 24,
+      "25": 25,
+      "26": 26,
+      "27": 27,
+      "28": 28,
+      "29": 29,
+      "3": 3,
+      "30": 30,
+      "31": 31,
+      "4": 4,
+      "5": 5,
+      "6": 6,
+      "7": 7,
+      "8": 8,
+      "9": 9
+    },
+    "scores": {
+      "1": 31.0,
+      "10": 22.0,
+      "11": 21.0,
+      "12": 20.0,
+      "13": 19.0,
+      "14": 18.0,
+      "15": 17.0,
+      "16": 16.0,
+      "17": 15.0,
+      "18": 14.0,
+      "19": 13.0,
+      "2": 30.0,
+      "20": 12.0,
+      "21": 11.0,
+      "22": 10.0,
+      "23": 9.0,
+      "24": 8.0,
+      "25": 7.0,
+      "26": 6.0,
+      "27": 5.0,
+      "28": 4.0,
+      "29": 3.0,
+      "3": 29.0,
+      "30": 2.0,
+      "31": 1.0,
+      "4": 28.0,
+      "5": 27.0,
+      "6": 26.0,
+      "7": 25.0,
+      "8": 24.0,
+      "9": 23.0
+    },
+    "top_numbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ]
+  },
+  "result_linkage": {
+    "canonical_history_draw": 1111,
+    "source": "canonical_history"
+  },
+  "schema_version": "v2-stage21-shadow-prediction-v1",
+  "seed": 123456,
+  "status": "EVALUATED",
+  "target_draw_date": "2026-02-10",
+  "target_draw_number": 1111,
+  "ticket_count": 2,
+  "tickets": [
+    {
+      "numbers": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "score": 145.0,
+      "ticket_index": 1
+    },
+    {
+      "numbers": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "score": 120.0,
+      "ticket_index": 2
+    }
+  ],
+  "warnings": [
+    "Shadow prediction is research-only and is not a production ticket.",
+    "Shadow records do not affect production predictions, settlements, or email."
+  ]
+}

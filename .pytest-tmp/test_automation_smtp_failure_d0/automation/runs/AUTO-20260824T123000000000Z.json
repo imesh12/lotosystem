@@ -1,0 +1,53 @@
+{
+  "completed_at": "2026-09-02T10:53:55.125788+09:00",
+  "errors": [],
+  "lotteries": [
+    {
+      "action": "RESULT_PROCESSED",
+      "errors": [],
+      "history_update": {
+        "appended": 1,
+        "fallback_used": true,
+        "new_latest_draw": 2131,
+        "previous_latest_draw": 2130,
+        "selected_source": "secondary",
+        "source_attempts": [],
+        "update_status": "NEW_RESULT"
+      },
+      "lottery": "LOTO6",
+      "next_prediction": {
+        "created": true,
+        "draw": 2132,
+        "status": "PENDING",
+        "target_date": "2026-08-27",
+        "tickets": 3
+      },
+      "next_run_at": "2026-08-27T21:00:00+09:00",
+      "notifications": [
+        {
+          "attempt_count": 1,
+          "delivery_status": "FAILED",
+          "last_error": "smtp down",
+          "notification_id": "DRAW_PROCESSED-LOTO6-2131",
+          "type": "DRAW_PROCESSED"
+        }
+      ],
+      "prediction_evaluation": {
+        "evaluated": [
+          2131
+        ]
+      },
+      "result_source_status": "NEW_RESULT",
+      "settlement": {
+        "paths": [
+          "C:\\Users\\imcom\\Downloads\\loto-system\\.pytest-tmp\\test_automation_smtp_failure_d0\\settlements\\LOTO6\\2131.json"
+        ]
+      },
+      "warnings": []
+    }
+  ],
+  "run_at": "2026-08-24T21:30:00+09:00",
+  "run_id": "AUTO-20260824T123000000000Z",
+  "timezone": "Asia/Tokyo",
+  "warnings": []
+}

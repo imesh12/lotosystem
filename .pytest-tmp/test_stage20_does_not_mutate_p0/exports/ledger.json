@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "bh_exploratory_p_value": 0.09090909090909091,
+      "comparison": "extra_trees_vs_random",
+      "conclusion": "weak_signal",
+      "dataset_hash": "b2cd12939835f02220e61e7376fba60faa03861c2d9385b644a49cc07c2c4edb",
+      "experiment_id": "V2-EXP-be88e50cd14cf35d",
+      "feature_group": "gap_only",
+      "hypothesis": "Extra Trees may improve historical gap_only ranking",
+      "ledger_adjusted_p_value": 0.09090909090909091,
+      "lottery": "LOTO6",
+      "model": "extra_trees",
+      "raw_p_value": 0.09090909090909091,
+      "stage": "20",
+      "stage_adjusted_p_value": 0.2727272727272727,
+      "status": "RETIRE"
+    }
+  ],
+  "exploratory_method": "benjamini_hochberg",
+  "multiple_comparison_method": "holm",
+  "schema_version": "v2-experiment-ledger-v1"
+}

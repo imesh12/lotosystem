@@ -1,0 +1,137 @@
+{
+  "config": {
+    "candidate_pool_size": 50,
+    "ml_min_training_draws": 100,
+    "ml_refit_interval": 25
+  },
+  "cost_yen": 400,
+  "dataset_hash": "6bf708012e6fe8e1d0291d9d0b9fa4b20a320c43bbf72bc4c435a812edfc6762",
+  "evaluation": {
+    "actual_bonus_numbers": [
+      1
+    ],
+    "actual_draw_date": "2024-11-23",
+    "actual_draw_number": 1109,
+    "actual_main_numbers": [
+      17,
+      22,
+      27,
+      32,
+      37,
+      42
+    ],
+    "best_match_count": 5,
+    "evaluated_at": "2026-09-02T01:53:41.008839+00:00",
+    "gross_winnings_yen": null,
+    "prize_qualified_ticket_count": 1,
+    "ticket_results": [
+      {
+        "bonus_match_count": 0,
+        "main_match_count": 5,
+        "numbers": [
+          12,
+          17,
+          22,
+          27,
+          32,
+          37
+        ],
+        "prize_category": "3rd",
+        "qualifies_for_prize": true,
+        "ticket_index": 1
+      },
+      {
+        "bonus_match_count": 1,
+        "main_match_count": 1,
+        "numbers": [
+          1,
+          4,
+          9,
+          14,
+          42,
+          43
+        ],
+        "prize_category": null,
+        "qualifies_for_prize": false,
+        "ticket_index": 2
+      }
+    ]
+  },
+  "feature_group": "gap_only",
+  "feature_names": [
+    "current_gap",
+    "mean_gap",
+    "gap_std",
+    "max_gap"
+  ],
+  "feature_version": "number-features-v2",
+  "generated_at": "2026-08-24T00:00:00+00:00",
+  "gross_winnings_yen": null,
+  "latest_source_draw_date": "2024-11-20",
+  "latest_source_draw_number": 1108,
+  "lottery": "LOTO6",
+  "model": "random_forest",
+  "model_parameters": {
+    "bootstrap": true,
+    "ccp_alpha": 0.0,
+    "class_weight": "balanced_subsample",
+    "criterion": "gini",
+    "max_depth": 6,
+    "max_features": "sqrt",
+    "max_leaf_nodes": null,
+    "max_samples": null,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 10,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "n_estimators": 10,
+    "n_jobs": 1,
+    "oob_score": false,
+    "random_state": 123456,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "portfolio_method": "top_ranked",
+  "portfolio_version": "two-ticket-portfolio-v1",
+  "schema_version": "stage10-production-prediction-v1",
+  "seed": 123456,
+  "sklearn_version": "1.9.0",
+  "status": "EVALUATED",
+  "strategy": "conservative_stage09_selection",
+  "target_draw_date": "2024-11-21",
+  "target_draw_number": 1109,
+  "ticket_price_yen": 200,
+  "tickets": [
+    {
+      "numbers": [
+        12,
+        17,
+        22,
+        27,
+        32,
+        37
+      ],
+      "score": 5.602839375308786,
+      "ticket_index": 1
+    },
+    {
+      "numbers": [
+        1,
+        4,
+        9,
+        14,
+        42,
+        43
+      ],
+      "score": 1.7326268719584161,
+      "ticket_index": 2
+    }
+  ],
+  "tickets_per_draw": 2,
+  "warnings": [
+    "Paper-trading record only; no ticket purchase is performed.",
+    "Generated tickets are research outputs, not guaranteed winning numbers.",
+    "Payout amounts and ROI are not calculated."
+  ]
+}

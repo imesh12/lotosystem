@@ -1,0 +1,60 @@
+{
+  "actual_result": {
+    "bonus_numbers": [
+      2
+    ],
+    "main_numbers": [
+      1,
+      6,
+      11,
+      16,
+      21,
+      26
+    ]
+  },
+  "dataset_hash": "dataset",
+  "diagnostic_classification": "INSUFFICIENT_DATA",
+  "draw_date": "2024-11-29",
+  "draw_number": 1111,
+  "evaluated_at": "2026-01-02T00:00:00+00:00",
+  "feature_group": "champion",
+  "feature_names": [],
+  "feature_version": "v",
+  "generated_at": "2026-01-01T00:00:00+00:00",
+  "lottery": "LOTO6",
+  "model": "champion",
+  "portfolio": {
+    "best_ticket_matches": 1,
+    "paper_cost": 600,
+    "paper_gross": null,
+    "paper_net": null,
+    "prize_qualified_tickets": 0,
+    "total_main_matches_across_tickets": 2
+  },
+  "portfolio_method": "top_ranked",
+  "prediction_id": "1111",
+  "prediction_path": "data/predictions/test.json",
+  "random_control": {
+    "mean_best_ticket_matches": 1.0,
+    "mean_total_portfolio_matches": 2.0,
+    "paper_gross_distribution": null,
+    "prize_qualified_rate": 0.0,
+    "production_best_match_percentile": 0.5,
+    "production_total_match_percentile": 0.5,
+    "replications": 10,
+    "seed": 123456,
+    "tickets_per_draw": 3
+  },
+  "ranking": {
+    "top_capture": {
+      "top_6": 1
+    },
+    "top_numbers": [],
+    "winning_number_ranks": []
+  },
+  "schema_version": "stage19-prospective-record-v1",
+  "seed": 123456,
+  "ticket_results": [],
+  "tickets_per_draw": 3,
+  "warnings": []
+}

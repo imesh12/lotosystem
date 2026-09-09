@@ -1,0 +1,43 @@
+{
+  "completed_at": "2026-09-02T10:53:54.658718+09:00",
+  "errors": [
+    "source unavailable"
+  ],
+  "lotteries": [
+    {
+      "action": "SOURCE_FAILURE",
+      "errors": [
+        "source unavailable"
+      ],
+      "history_update": {
+        "appended": 0,
+        "new_latest_draw": 2109,
+        "previous_latest_draw": 2109
+      },
+      "lottery": "LOTO6",
+      "next_prediction": null,
+      "next_run_at": "2026-08-25T00:30:00+09:00",
+      "notifications": [
+        {
+          "attempt_count": 1,
+          "delivery_status": "SENT",
+          "last_error": null,
+          "notification_id": "SOURCE_FAILURE-LOTO6-2110-20260824",
+          "type": "SOURCE_FAILURE"
+        }
+      ],
+      "prediction_evaluation": {
+        "evaluated": []
+      },
+      "result_source_status": "SOURCE_FAILURE",
+      "settlement": {
+        "paths": []
+      },
+      "warnings": []
+    }
+  ],
+  "run_at": "2026-08-24T21:30:00+09:00",
+  "run_id": "AUTO-20260824T123000000000Z",
+  "timezone": "Asia/Tokyo",
+  "warnings": []
+}

@@ -1,0 +1,38 @@
+{
+  "completed_at": "2026-09-02T10:53:55.826359+09:00",
+  "errors": [],
+  "lotteries": [
+    {
+      "action": "NO_ACTION",
+      "errors": [],
+      "history_update": {
+        "appended": 0,
+        "new_latest_draw": 1009,
+        "previous_latest_draw": 1009
+      },
+      "lottery": "MINI_LOTO",
+      "next_prediction": null,
+      "next_run_at": "2026-09-02T10:53:55.820604+09:00",
+      "notifications": [],
+      "prediction_evaluation": {
+        "evaluated": []
+      },
+      "result_source_status": null,
+      "settings_enabled": false,
+      "settlement": {
+        "paths": []
+      },
+      "warnings": [
+        "result check is due before creating any new future prediction",
+        "lottery automation is disabled in settings"
+      ]
+    }
+  ],
+  "run_at": "2026-09-02T10:53:55.820604+09:00",
+  "run_id": "AUTO-20260902T015355820604Z",
+  "timezone": "Asia/Tokyo",
+  "warnings": [
+    "result check is due before creating any new future prediction",
+    "lottery automation is disabled in settings"
+  ]
+}

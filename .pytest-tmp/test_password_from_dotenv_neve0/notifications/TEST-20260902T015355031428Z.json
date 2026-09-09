@@ -1,0 +1,17 @@
+{
+  "attempt_count": 1,
+  "body": "PAPER TRADING / SIMULATED\n\nThis is a LotoSystem email delivery test.",
+  "created_at": "2026-09-02T01:53:55.031428+00:00",
+  "delivery_status": "FAILED",
+  "draw_number": null,
+  "last_error": "smtp rejected [redacted]",
+  "lottery": "ALL",
+  "notification_id": "TEST-20260902T015355031428Z",
+  "notification_type": "TEST",
+  "schema_version": "stage14-notification-v1",
+  "sent_at": null,
+  "source": {
+    "kind": "test"
+  },
+  "subject": "[LotoSystem] Test Email"
+}

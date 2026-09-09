@@ -1,0 +1,17 @@
+{
+  "entries": [
+    {
+      "best_matches": null,
+      "cost_yen": 600,
+      "evaluated": false,
+      "gross_winnings_yen": null,
+      "prediction_created_before_draw": true,
+      "prize_categories": [],
+      "target_draw_date": "2024-11-25",
+      "target_draw_number": 1110,
+      "tickets_generated": 3
+    }
+  ],
+  "lottery": "LOTO6",
+  "schema_version": "stage10-paper-trading-ledger-v1"
+}

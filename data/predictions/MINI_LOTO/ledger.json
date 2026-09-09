@@ -1,14 +1,59 @@
 {
   "entries": [
     {
+      "best_matches": 1,
+      "cost_yen": 600,
+      "evaluated": true,
+      "gross_winnings_yen": null,
+      "prediction_created_before_draw": true,
+      "prize_categories": [
+        null,
+        null,
+        null
+      ],
+      "target_draw_date": "2026-08-25",
+      "target_draw_number": 1401,
+      "tickets_generated": 3
+    },
+    {
+      "best_matches": 2,
+      "cost_yen": 600,
+      "evaluated": true,
+      "gross_winnings_yen": null,
+      "prediction_created_before_draw": true,
+      "prize_categories": [
+        null,
+        null,
+        null
+      ],
+      "target_draw_date": "2026-09-01",
+      "target_draw_number": 1402,
+      "tickets_generated": 3
+    },
+    {
+      "best_matches": 2,
+      "cost_yen": 600,
+      "evaluated": true,
+      "gross_winnings_yen": null,
+      "prediction_created_before_draw": true,
+      "prize_categories": [
+        null,
+        null,
+        null
+      ],
+      "target_draw_date": "2026-09-08",
+      "target_draw_number": 1403,
+      "tickets_generated": 3
+    },
+    {
       "best_matches": null,
       "cost_yen": 600,
       "evaluated": false,
       "gross_winnings_yen": null,
       "prediction_created_before_draw": true,
       "prize_categories": [],
-      "target_draw_date": "2026-08-25",
-      "target_draw_number": 1401,
+      "target_draw_date": "2026-09-15",
+      "target_draw_number": 1404,
       "tickets_generated": 3
     }
   ],

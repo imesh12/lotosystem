@@ -1,0 +1,19 @@
+{
+  "challenger_id": "shadow-a",
+  "entries": [
+    {
+      "best_ticket_matches": null,
+      "challenger_id": "shadow-a",
+      "champion_comparison_ready": false,
+      "lottery": "LOTO6",
+      "prospective_eligible": true,
+      "status": "PENDING",
+      "target_draw_date": "2024-11-28",
+      "target_draw_number": 1111,
+      "ticket_count": 3,
+      "total_portfolio_matches": null
+    }
+  ],
+  "lottery": "LOTO6",
+  "schema_version": "v2-stage21-shadow-ledger-v1"
+}

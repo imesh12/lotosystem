@@ -1,0 +1,32 @@
+{
+  "completed_at": "2026-09-02T01:53:44.872574+00:00",
+  "cycle_id": "CYCLE-MINI_LOTO-20260902T015344486419Z",
+  "errors": [],
+  "evaluated_predictions": [
+    1010
+  ],
+  "history": {
+    "appended": 2,
+    "fallback_used": false,
+    "new_latest_draw": 1011,
+    "output_path": "C:\\Users\\imcom\\Downloads\\loto-system\\.pytest-tmp\\test_cycle_catch_up_does_not_f0\\mini.csv",
+    "previous_latest_draw": 1009,
+    "selected_source": null,
+    "source_attempts": [],
+    "update_status": "NEW_RESULT"
+  },
+  "lottery": "MINI_LOTO",
+  "next_prediction": {
+    "created": true,
+    "draw": 1012,
+    "record_path": "C:\\Users\\imcom\\Downloads\\loto-system\\.pytest-tmp\\test_cycle_catch_up_does_not_f0\\predictions\\MINI_LOTO\\1012.json",
+    "status": "PENDING",
+    "target_date": "2026-02-24",
+    "tickets": 3
+  },
+  "settlements": [
+    "C:\\Users\\imcom\\Downloads\\loto-system\\.pytest-tmp\\test_cycle_catch_up_does_not_f0\\settlements\\MINI_LOTO\\1010.json"
+  ],
+  "started_at": "2026-09-02T01:53:44.486419+00:00",
+  "warnings": []
+}

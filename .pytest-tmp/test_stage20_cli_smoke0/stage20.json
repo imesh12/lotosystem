@@ -1,0 +1,163 @@
+{
+  "configuration": {
+    "bootstrap_replications": 10,
+    "confidence_level": 0.95,
+    "decision_rule": "keep Extra Trees only when it is positive vs random and champion, ledger-adjusted evidence is stronger than the champion, and stability is acceptable",
+    "ml_min_training_draws": 12,
+    "ml_refit_interval": 5,
+    "seed": 123456,
+    "tickets_per_draw": 2
+  },
+  "current_champion": {
+    "comparison_vs_champion": null,
+    "comparison_vs_random": {
+      "baseline_value": 0.7727272727272727,
+      "bh_exploratory_p_value": 0.13636363636363635,
+      "difference": 0.4318181818181818,
+      "difference_ci": {
+        "confidence_level": 0.95,
+        "lower": 0.26022727272727275,
+        "upper": 0.6840909090909092
+      },
+      "effect_size": {
+        "absolute_difference": 0.4318181818181818,
+        "relative_difference": 0.5588235294117647,
+        "standardized_mean_difference": 0.5695161168636717
+      },
+      "ledger_adjusted_p_value": 0.2727272727272727,
+      "model_value": 1.2045454545454546,
+      "raw_p_value": 0.09090909090909091,
+      "stage_adjusted_p_value": 0.2727272727272727
+    },
+    "conclusion": "needs_more_validation",
+    "experiment_id": "V2-EXP-27f557c4e6b879b3",
+    "experiment_status": "CURRENT_CHAMPION",
+    "feature_group": "pair_only",
+    "feature_names": [
+      "pair_strength_rate"
+    ],
+    "mean_matches": 1.2045454545454546,
+    "model_name": "logistic_regression",
+    "model_parameters": {
+      "class_weight": "balanced",
+      "max_iter": 250,
+      "random_state": 123456,
+      "solver": "liblinear"
+    },
+    "period_stability": [
+      {
+        "direction": "positive",
+        "mean_match_difference": 0.4318181818181818,
+        "period": "2024-latest",
+        "prize_rate_difference": 0.11363636363636363,
+        "target_draws": 22
+      }
+    ],
+    "prize_qualified_rate": 0.11363636363636363,
+    "random_mean_matches": 0.7727272727272727,
+    "sample_size": 22,
+    "tickets_per_draw": 2
+  },
+  "dataset_hash": "82917ad810953c492f9ac51253711683f76fd8691208c4bcd22591d4c1d33230",
+  "dataset_range": {
+    "draw_count": 34,
+    "first_draw_date": "2024-01-01",
+    "first_draw_number": 1000,
+    "last_draw_date": "2024-08-19",
+    "last_draw_number": 1033
+  },
+  "experiment_ledger": {
+    "correction_scope": "all entries in the V2 experiment ledger",
+    "hypothesis_count": 1,
+    "multiple_comparison_method": "Holm; BH exploratory reported separately",
+    "path": "C:\\Users\\imcom\\Downloads\\loto-system\\.pytest-tmp\\test_stage20_cli_smoke0\\ledger.json",
+    "schema_version": "v2-experiment-ledger-v1"
+  },
+  "extra_trees": {
+    "comparison_vs_champion": {
+      "baseline_value": 1.2045454545454546,
+      "bh_exploratory_p_value": 0.13636363636363635,
+      "difference": -0.45454545454545453,
+      "difference_ci": {
+        "confidence_level": 0.95,
+        "lower": -0.6261363636363636,
+        "upper": -0.26534090909090907
+      },
+      "effect_size": {
+        "absolute_difference": -0.45454545454545453,
+        "relative_difference": -0.3773584905660377,
+        "standardized_mean_difference": -0.675737378399486
+      },
+      "ledger_adjusted_p_value": 0.2727272727272727,
+      "model_value": 0.75,
+      "raw_p_value": 0.09090909090909091,
+      "stage_adjusted_p_value": 0.2727272727272727
+    },
+    "comparison_vs_random": {
+      "baseline_value": 0.7727272727272727,
+      "bh_exploratory_p_value": 1.0,
+      "difference": -0.022727272727272728,
+      "difference_ci": {
+        "confidence_level": 0.95,
+        "lower": -0.17386363636363633,
+        "upper": 0.22670454545454552
+      },
+      "effect_size": {
+        "absolute_difference": -0.022727272727272728,
+        "relative_difference": -0.029411764705882356,
+        "standardized_mean_difference": -0.029297936765452382
+      },
+      "ledger_adjusted_p_value": 1.0,
+      "model_value": 0.75,
+      "raw_p_value": 1.0,
+      "stage_adjusted_p_value": 1.0
+    },
+    "conclusion": "no_evidence",
+    "experiment_id": "V2-EXP-6e303da465ec28d2",
+    "experiment_status": "RETIRE",
+    "feature_group": "pair_only",
+    "feature_names": [
+      "pair_strength_rate"
+    ],
+    "mean_matches": 0.75,
+    "model_name": "extra_trees",
+    "model_parameters": {
+      "class_weight": "balanced",
+      "max_depth": 6,
+      "min_samples_leaf": 10,
+      "n_estimators": 10,
+      "n_jobs": 1,
+      "random_state": 123456
+    },
+    "period_stability": [
+      {
+        "direction": "negative",
+        "mean_match_difference": -0.022727272727272728,
+        "period": "2024-latest",
+        "prize_rate_difference": 0.06818181818181818,
+        "target_draws": 22
+      }
+    ],
+    "prize_qualified_rate": 0.06818181818181818,
+    "random_mean_matches": 0.7727272727272727,
+    "sample_size": 22,
+    "tickets_per_draw": 2
+  },
+  "feature_group": "pair_only",
+  "feature_version": "number-features-v2",
+  "leakage": {
+    "future_mutation_changes_prediction": false,
+    "lookahead_safe": true,
+    "target_mutation_changes_features": false,
+    "training_dates_strictly_before_target": true
+  },
+  "lottery": "MINI_LOTO",
+  "portfolio_method": "top_ranked",
+  "schema_version": "v2-stage20-extra-trees-v1",
+  "sklearn_version": "1.9.0",
+  "warnings": [
+    "Stage 20 is historical research only and does not alter production strategy.",
+    "Extra Trees is not promoted by this evaluation.",
+    "ML scores are ranking values, not winning probabilities."
+  ]
+}

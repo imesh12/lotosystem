@@ -1,0 +1,41 @@
+{
+  "completed_at": "2026-09-02T10:53:50.108281+09:00",
+  "errors": [],
+  "lotteries": [
+    {
+      "action": "CHECK_RESULT",
+      "errors": [],
+      "history_update": {
+        "appended": 0,
+        "fallback_used": true,
+        "new_latest_draw": 100,
+        "previous_latest_draw": 100,
+        "selected_source": "secondary",
+        "source_attempts": [],
+        "update_status": "NO_NEW_RESULT"
+      },
+      "lottery": "LOTO6",
+      "next_prediction": {
+        "created": false,
+        "draw": 101,
+        "status": "PENDING",
+        "target_date": "2026-08-27",
+        "tickets": 3
+      },
+      "next_run_at": "2026-08-25T00:31:00+09:00",
+      "notifications": [],
+      "prediction_evaluation": {
+        "evaluated": []
+      },
+      "result_source_status": "NO_NEW_RESULT",
+      "settlement": {
+        "paths": []
+      },
+      "warnings": []
+    }
+  ],
+  "run_at": "2026-08-24T21:31:00+09:00",
+  "run_id": "AUTO-20260824T123100000000Z",
+  "timezone": "Asia/Tokyo",
+  "warnings": []
+}

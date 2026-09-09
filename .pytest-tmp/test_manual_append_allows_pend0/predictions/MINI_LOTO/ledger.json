@@ -1,0 +1,20 @@
+{
+  "entries": [
+    {
+      "best_matches": 2,
+      "cost_yen": 400,
+      "evaluated": true,
+      "gross_winnings_yen": null,
+      "prediction_created_before_draw": true,
+      "prize_categories": [
+        null,
+        null
+      ],
+      "target_draw_date": "2026-08-25",
+      "target_draw_number": 1405,
+      "tickets_generated": 2
+    }
+  ],
+  "lottery": "MINI_LOTO",
+  "schema_version": "stage10-paper-trading-ledger-v1"
+}

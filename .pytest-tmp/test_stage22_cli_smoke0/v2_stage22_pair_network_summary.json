@@ -1,0 +1,11 @@
+{
+  "challenger_mean": 1.0862068965517242,
+  "champion_mean": 0.8103448275862069,
+  "dataset_hash": "42f54c3308124b244eb6f556db5624580468a4485626ef1332e9722356ae90bf",
+  "diff_vs_champion": 0.27586206896551724,
+  "diff_vs_random": 0.13793103448275862,
+  "ledger_adjusted_p_value": 0.09090909090909091,
+  "lottery": "MINI_LOTO",
+  "schema_version": "v2-stage22-pair-network-summary-v1",
+  "verdict": "KEEP_AS_SHADOW_CANDIDATE"
+}

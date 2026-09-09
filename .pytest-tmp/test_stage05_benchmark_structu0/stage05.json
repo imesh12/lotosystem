@@ -1,0 +1,384 @@
+{
+  "configuration": {
+    "backtest_min_training_draws": 3,
+    "baseline_replications": 3,
+    "candidate_limit": 4,
+    "candidate_pool_numbers": 8,
+    "frequency_windows": [
+      10,
+      20,
+      50,
+      100
+    ],
+    "seed": 123,
+    "tickets_per_draw": 2
+  },
+  "cost": {
+    "cost_per_draw_yen": 400,
+    "ticket_price_yen": 200,
+    "tickets_per_draw": 2,
+    "total_historical_simulated_cost_yen": 2400
+  },
+  "dataset": {
+    "dataset_hash": "04a7f417fbb64135b36068edba05afdb640d2a56c680ec438ce49d883dce9245",
+    "draw_count": 6,
+    "first_draw_date": "2026-01-01",
+    "first_draw_number": 1,
+    "last_draw_date": "2026-02-05",
+    "last_draw_number": 6,
+    "lottery": "LOTO6",
+    "missing_draw_numbers": []
+  },
+  "lottery": "LOTO6",
+  "random_baseline": {
+    "aggregate_metrics": {
+      "average_matches_per_ticket": 0.8333333333333334,
+      "draws_evaluated": 6,
+      "match_counts": {
+        "0": 15,
+        "1": 14,
+        "2": 5,
+        "3": 2,
+        "4": 0,
+        "5": 0,
+        "6": 0
+      },
+      "match_rates": {
+        "0": 0.4166666666666667,
+        "1": 0.3888888888888889,
+        "2": 0.1388888888888889,
+        "3": 0.05555555555555555,
+        "3_plus": 0.05555555555555555,
+        "4": 0.0,
+        "4_plus": 0.0,
+        "5": 0.0,
+        "5_plus": 0.0,
+        "6": 0.0
+      },
+      "maximum_matches": 3,
+      "prize_category_counts": {
+        "1st": 0,
+        "2nd": 0,
+        "3rd": 0,
+        "4th": 0,
+        "5th": 2
+      },
+      "prize_qualified_rate": 0.05555555555555555,
+      "prize_qualified_ticket_count": 2,
+      "tickets_evaluated": 36,
+      "total_main_matches": 30
+    },
+    "distribution": {
+      "average_matches": {
+        "maximum": 0.9166666666666666,
+        "mean": 0.8333333333333334,
+        "median": 0.8333333333333334,
+        "minimum": 0.75,
+        "percentile_2_5": 0.7541666666666665,
+        "percentile_97_5": 0.9125,
+        "standard_deviation": 0.06804138174397716
+      },
+      "match_rate_3_plus": {
+        "maximum": 0.08333333333333333,
+        "mean": 0.05555555555555555,
+        "median": 0.08333333333333333,
+        "minimum": 0.0,
+        "percentile_2_5": 0.004166666666666667,
+        "percentile_97_5": 0.08333333333333333,
+        "standard_deviation": 0.039283710065919304
+      },
+      "match_rate_4_plus": {
+        "maximum": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "minimum": 0.0,
+        "percentile_2_5": 0.0,
+        "percentile_97_5": 0.0,
+        "standard_deviation": 0.0
+      },
+      "match_rate_5_plus": {
+        "maximum": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "minimum": 0.0,
+        "percentile_2_5": 0.0,
+        "percentile_97_5": 0.0,
+        "standard_deviation": 0.0
+      },
+      "prize_qualified_rate": {
+        "maximum": 0.08333333333333333,
+        "mean": 0.05555555555555555,
+        "median": 0.08333333333333333,
+        "minimum": 0.0,
+        "percentile_2_5": 0.004166666666666667,
+        "percentile_97_5": 0.08333333333333333,
+        "standard_deviation": 0.039283710065919304
+      }
+    },
+    "replications": 3,
+    "seed": 123,
+    "tickets_per_draw": 2
+  },
+  "schema_version": "stage05-baseline-benchmark-v1",
+  "strategy_metrics": {
+    "balanced": {
+      "average_match_difference_vs_random": 0.4999999999999999,
+      "lookahead_safe": true,
+      "metrics": {
+        "average_matches_per_ticket": 1.3333333333333333,
+        "draws_evaluated": 3,
+        "match_counts": {
+          "0": 2,
+          "1": 0,
+          "2": 4,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.3333333333333333,
+          "1": 0.0,
+          "2": 0.6666666666666666,
+          "3": 0.0,
+          "3_plus": 0.0,
+          "4": 0.0,
+          "4_plus": 0.0,
+          "5": 0.0,
+          "5_plus": 0.0,
+          "6": 0.0
+        },
+        "maximum_matches": 2,
+        "prize_category_counts": {
+          "1st": 0,
+          "2nd": 0,
+          "3rd": 0,
+          "4th": 0,
+          "5th": 0
+        },
+        "prize_qualified_rate": 0.0,
+        "prize_qualified_ticket_count": 0,
+        "tickets_evaluated": 6,
+        "total_main_matches": 8
+      },
+      "prize_rate_difference_vs_random": -0.05555555555555555,
+      "strategy": "balanced"
+    },
+    "frequency": {
+      "average_match_difference_vs_random": 0.8333333333333334,
+      "lookahead_safe": true,
+      "metrics": {
+        "average_matches_per_ticket": 1.6666666666666667,
+        "draws_evaluated": 3,
+        "match_counts": {
+          "0": 0,
+          "1": 3,
+          "2": 2,
+          "3": 1,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.0,
+          "1": 0.5,
+          "2": 0.3333333333333333,
+          "3": 0.16666666666666666,
+          "3_plus": 0.16666666666666666,
+          "4": 0.0,
+          "4_plus": 0.0,
+          "5": 0.0,
+          "5_plus": 0.0,
+          "6": 0.0
+        },
+        "maximum_matches": 3,
+        "prize_category_counts": {
+          "1st": 0,
+          "2nd": 0,
+          "3rd": 0,
+          "4th": 0,
+          "5th": 1
+        },
+        "prize_qualified_rate": 0.16666666666666666,
+        "prize_qualified_ticket_count": 1,
+        "tickets_evaluated": 6,
+        "total_main_matches": 10
+      },
+      "prize_rate_difference_vs_random": 0.1111111111111111,
+      "strategy": "frequency"
+    },
+    "hybrid": {
+      "average_match_difference_vs_random": 0.8333333333333334,
+      "lookahead_safe": true,
+      "metrics": {
+        "average_matches_per_ticket": 1.6666666666666667,
+        "draws_evaluated": 3,
+        "match_counts": {
+          "0": 0,
+          "1": 3,
+          "2": 2,
+          "3": 1,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.0,
+          "1": 0.5,
+          "2": 0.3333333333333333,
+          "3": 0.16666666666666666,
+          "3_plus": 0.16666666666666666,
+          "4": 0.0,
+          "4_plus": 0.0,
+          "5": 0.0,
+          "5_plus": 0.0,
+          "6": 0.0
+        },
+        "maximum_matches": 3,
+        "prize_category_counts": {
+          "1st": 0,
+          "2nd": 0,
+          "3rd": 0,
+          "4th": 0,
+          "5th": 1
+        },
+        "prize_qualified_rate": 0.16666666666666666,
+        "prize_qualified_ticket_count": 1,
+        "tickets_evaluated": 6,
+        "total_main_matches": 10
+      },
+      "prize_rate_difference_vs_random": 0.1111111111111111,
+      "strategy": "hybrid"
+    },
+    "pair": {
+      "average_match_difference_vs_random": 0.8333333333333334,
+      "lookahead_safe": true,
+      "metrics": {
+        "average_matches_per_ticket": 1.6666666666666667,
+        "draws_evaluated": 3,
+        "match_counts": {
+          "0": 0,
+          "1": 3,
+          "2": 2,
+          "3": 1,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.0,
+          "1": 0.5,
+          "2": 0.3333333333333333,
+          "3": 0.16666666666666666,
+          "3_plus": 0.16666666666666666,
+          "4": 0.0,
+          "4_plus": 0.0,
+          "5": 0.0,
+          "5_plus": 0.0,
+          "6": 0.0
+        },
+        "maximum_matches": 3,
+        "prize_category_counts": {
+          "1st": 0,
+          "2nd": 0,
+          "3rd": 0,
+          "4th": 0,
+          "5th": 1
+        },
+        "prize_qualified_rate": 0.16666666666666666,
+        "prize_qualified_ticket_count": 1,
+        "tickets_evaluated": 6,
+        "total_main_matches": 10
+      },
+      "prize_rate_difference_vs_random": 0.1111111111111111,
+      "strategy": "pair"
+    },
+    "recency": {
+      "average_match_difference_vs_random": 0.33333333333333337,
+      "lookahead_safe": true,
+      "metrics": {
+        "average_matches_per_ticket": 1.1666666666666667,
+        "draws_evaluated": 3,
+        "match_counts": {
+          "0": 0,
+          "1": 5,
+          "2": 1,
+          "3": 0,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.0,
+          "1": 0.8333333333333334,
+          "2": 0.16666666666666666,
+          "3": 0.0,
+          "3_plus": 0.0,
+          "4": 0.0,
+          "4_plus": 0.0,
+          "5": 0.0,
+          "5_plus": 0.0,
+          "6": 0.0
+        },
+        "maximum_matches": 2,
+        "prize_category_counts": {
+          "1st": 0,
+          "2nd": 0,
+          "3rd": 0,
+          "4th": 0,
+          "5th": 0
+        },
+        "prize_qualified_rate": 0.0,
+        "prize_qualified_ticket_count": 0,
+        "tickets_evaluated": 6,
+        "total_main_matches": 7
+      },
+      "prize_rate_difference_vs_random": -0.05555555555555555,
+      "strategy": "recency"
+    }
+  },
+  "strategy_vs_random_differences": {
+    "balanced": {
+      "average_matches": 0.4999999999999999,
+      "prize_qualified_rate": -0.05555555555555555
+    },
+    "frequency": {
+      "average_matches": 0.8333333333333334,
+      "prize_qualified_rate": 0.1111111111111111
+    },
+    "hybrid": {
+      "average_matches": 0.8333333333333334,
+      "prize_qualified_rate": 0.1111111111111111
+    },
+    "pair": {
+      "average_matches": 0.8333333333333334,
+      "prize_qualified_rate": 0.1111111111111111
+    },
+    "recency": {
+      "average_matches": 0.33333333333333337,
+      "prize_qualified_rate": -0.05555555555555555
+    }
+  },
+  "theoretical_probabilities": {
+    "expected_average_matches": 0.8372093023255814,
+    "match_probabilities": {
+      "0": 0.38133380486427026,
+      "1": 0.4290005304723041,
+      "2": 0.16250020093647882,
+      "3": 0.025490227597879028,
+      "4": 0.0016386574884350805,
+      "5": 3.64146108541129e-05,
+      "6": 1.6402977862213017e-07
+    },
+    "match_rate_3_plus": 0.027165463726946844,
+    "match_rate_4_plus": 0.0016752361290678155,
+    "match_rate_5_plus": 3.6578640632735026e-05,
+    "monte_carlo_average_matches_delta": -0.003875968992248069,
+    "monte_carlo_prize_rate_delta": 0.02839009182860871,
+    "prize_qualified_rate": 0.027165463726946844
+  },
+  "warnings": [
+    "Historical strategy performance does not guarantee future lottery outcomes.",
+    "Prize categories are counted, but payout amounts and ROI are not calculated."
+  ]
+}

@@ -1,0 +1,620 @@
+{
+  "conclusion": "promising_portfolio_method",
+  "configuration": {
+    "bootstrap_replications": 20,
+    "candidate_pool_size": 10,
+    "confidence_level": 0.95,
+    "ml_min_training_draws": 8,
+    "ml_refit_interval": 3,
+    "overlap_penalties": [
+      0.0,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "seed": 123456,
+    "tickets_per_draw": 2
+  },
+  "current_construction_audit": {
+    "average_overlap": 0,
+    "average_unique_number_coverage": 12,
+    "deterministic": true,
+    "method": "top_ranked: Ticket 1 uses the top K scored numbers; Ticket 2 uses the next K.",
+    "tie_breaking": "score descending, then number ascending",
+    "top_ranked_numbers_shared": false
+  },
+  "dataset_hash": "2c4e7912d25149fa3a4ef3d9f03dbc1e35963ec138f746ac66c42195f06b571f",
+  "dataset_range": {
+    "draw_count": 14,
+    "first_draw_date": "2026-01-01",
+    "first_draw_number": 1,
+    "last_draw_date": "2026-04-02",
+    "last_draw_number": 14
+  },
+  "feature_group": "gap_only",
+  "feature_version": "number-features-v2",
+  "leakage": {
+    "future_mutation_changes_prediction": false,
+    "lookahead_safe": true,
+    "target_mutation_changes_features": false,
+    "training_dates_strictly_before_target": true
+  },
+  "lottery": "LOTO6",
+  "method_results": {
+    "coverage": {
+      "comparison_vs_random": {
+        "adjusted_p_value": 0.3333333333333333,
+        "difference": 6.5,
+        "difference_ci": {
+          "confidence_level": 0.95,
+          "lower": 5.158333333333333,
+          "upper": 8.0
+        },
+        "effect_size": {
+          "absolute_difference": 6.5,
+          "relative_difference": 2.7857142857142856,
+          "standardized_mean_difference": 3.6055512754639896
+        },
+        "method_value": 8.833333333333334,
+        "random_value": 2.3333333333333335,
+        "raw_p_value": 0.047619047619047616
+      },
+      "conclusion": "needs_more_validation",
+      "configuration": {
+        "overlap_penalty": null,
+        "type": "coverage_first"
+      },
+      "method": "coverage",
+      "metrics": {
+        "average_best_ticket_matches": 4.833333333333333,
+        "average_matches_per_portfolio": 8.833333333333334,
+        "average_matches_per_ticket": 4.416666666666667,
+        "average_overlap": 4,
+        "average_unique_number_coverage": 8,
+        "best_match_count_distribution": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 1,
+          "5": 5,
+          "6": 0
+        },
+        "draws_evaluated": 6,
+        "match_counts": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 7,
+          "5": 5,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "3_plus": 1.0,
+          "4": 0.5833333333333334,
+          "4_plus": 1.0,
+          "5": 0.4166666666666667,
+          "5_plus": 0.4166666666666667,
+          "6": 0.0
+        },
+        "portfolio_prize_qualified_rate": 1.0,
+        "prize_qualified_rate": 1.0,
+        "tickets_evaluated": 12
+      },
+      "period_stability": [
+        {
+          "direction": "positive",
+          "mean_match_difference": 6.5,
+          "period": "2024-latest",
+          "prize_rate_difference": 0.8333333333333334,
+          "target_draws": 6
+        }
+      ]
+    },
+    "diversified": {
+      "comparison_vs_random": {
+        "adjusted_p_value": 0.3333333333333333,
+        "difference": 6.5,
+        "difference_ci": {
+          "confidence_level": 0.95,
+          "lower": 5.658333333333333,
+          "upper": 7.5875
+        },
+        "effect_size": {
+          "absolute_difference": 6.5,
+          "relative_difference": 2.7857142857142856,
+          "standardized_mean_difference": 3.6055512754639896
+        },
+        "method_value": 8.833333333333334,
+        "random_value": 2.3333333333333335,
+        "raw_p_value": 0.047619047619047616
+      },
+      "conclusion": "needs_more_validation",
+      "configuration": {
+        "overlap_penalty": 0.5,
+        "type": "score_with_overlap_penalty"
+      },
+      "method": "diversified",
+      "metrics": {
+        "average_best_ticket_matches": 4.833333333333333,
+        "average_matches_per_portfolio": 8.833333333333334,
+        "average_matches_per_ticket": 4.416666666666667,
+        "average_overlap": 4,
+        "average_unique_number_coverage": 8,
+        "best_match_count_distribution": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 1,
+          "5": 5,
+          "6": 0
+        },
+        "draws_evaluated": 6,
+        "match_counts": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 7,
+          "5": 5,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "3_plus": 1.0,
+          "4": 0.5833333333333334,
+          "4_plus": 1.0,
+          "5": 0.4166666666666667,
+          "5_plus": 0.4166666666666667,
+          "6": 0.0
+        },
+        "portfolio_prize_qualified_rate": 1.0,
+        "prize_qualified_rate": 1.0,
+        "tickets_evaluated": 12
+      },
+      "period_stability": [
+        {
+          "direction": "positive",
+          "mean_match_difference": 6.5,
+          "period": "2024-latest",
+          "prize_rate_difference": 0.8333333333333334,
+          "target_draws": 6
+        }
+      ]
+    },
+    "overlap_penalty_0": {
+      "comparison_vs_random": {
+        "adjusted_p_value": 0.3333333333333333,
+        "difference": 7.166666666666667,
+        "difference_ci": {
+          "confidence_level": 0.95,
+          "lower": 5.245833333333334,
+          "upper": 7.754166666666666
+        },
+        "effect_size": {
+          "absolute_difference": 7.166666666666667,
+          "relative_difference": 3.071428571428571,
+          "standardized_mean_difference": 3.388874746828133
+        },
+        "method_value": 9.5,
+        "random_value": 2.3333333333333335,
+        "raw_p_value": 0.047619047619047616
+      },
+      "conclusion": "needs_more_validation",
+      "configuration": {
+        "overlap_penalty": 0.0,
+        "type": "score_with_overlap_penalty"
+      },
+      "method": "overlap_penalty_0",
+      "metrics": {
+        "average_best_ticket_matches": 5,
+        "average_matches_per_portfolio": 9.5,
+        "average_matches_per_ticket": 4.75,
+        "average_overlap": 5,
+        "average_unique_number_coverage": 7,
+        "best_match_count_distribution": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 6,
+          "6": 0
+        },
+        "draws_evaluated": 6,
+        "match_counts": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 3,
+          "5": 9,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "3_plus": 1.0,
+          "4": 0.25,
+          "4_plus": 1.0,
+          "5": 0.75,
+          "5_plus": 0.75,
+          "6": 0.0
+        },
+        "portfolio_prize_qualified_rate": 1.0,
+        "prize_qualified_rate": 1.0,
+        "tickets_evaluated": 12
+      },
+      "period_stability": [
+        {
+          "direction": "positive",
+          "mean_match_difference": 7.166666666666667,
+          "period": "2024-latest",
+          "prize_rate_difference": 0.8333333333333334,
+          "target_draws": 6
+        }
+      ]
+    },
+    "overlap_penalty_0.25": {
+      "comparison_vs_random": {
+        "adjusted_p_value": 0.3333333333333333,
+        "difference": 7,
+        "difference_ci": {
+          "confidence_level": 0.95,
+          "lower": 5.658333333333333,
+          "upper": 8.0
+        },
+        "effect_size": {
+          "absolute_difference": 7,
+          "relative_difference": 3.0,
+          "standardized_mean_difference": 3.2403703492039297
+        },
+        "method_value": 9.333333333333334,
+        "random_value": 2.3333333333333335,
+        "raw_p_value": 0.047619047619047616
+      },
+      "conclusion": "needs_more_validation",
+      "configuration": {
+        "overlap_penalty": 0.25,
+        "type": "score_with_overlap_penalty"
+      },
+      "method": "overlap_penalty_0.25",
+      "metrics": {
+        "average_best_ticket_matches": 5,
+        "average_matches_per_portfolio": 9.333333333333334,
+        "average_matches_per_ticket": 4.666666666666667,
+        "average_overlap": 4.5,
+        "average_unique_number_coverage": 7.5,
+        "best_match_count_distribution": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 6,
+          "6": 0
+        },
+        "draws_evaluated": 6,
+        "match_counts": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 4,
+          "5": 8,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "3_plus": 1.0,
+          "4": 0.3333333333333333,
+          "4_plus": 1.0,
+          "5": 0.6666666666666666,
+          "5_plus": 0.6666666666666666,
+          "6": 0.0
+        },
+        "portfolio_prize_qualified_rate": 1.0,
+        "prize_qualified_rate": 1.0,
+        "tickets_evaluated": 12
+      },
+      "period_stability": [
+        {
+          "direction": "positive",
+          "mean_match_difference": 7,
+          "period": "2024-latest",
+          "prize_rate_difference": 0.8333333333333334,
+          "target_draws": 6
+        }
+      ]
+    },
+    "overlap_penalty_0.5": {
+      "comparison_vs_random": {
+        "adjusted_p_value": 0.3333333333333333,
+        "difference": 6.5,
+        "difference_ci": {
+          "confidence_level": 0.95,
+          "lower": 5.166666666666667,
+          "upper": 7.754166666666666
+        },
+        "effect_size": {
+          "absolute_difference": 6.5,
+          "relative_difference": 2.7857142857142856,
+          "standardized_mean_difference": 3.6055512754639896
+        },
+        "method_value": 8.833333333333334,
+        "random_value": 2.3333333333333335,
+        "raw_p_value": 0.047619047619047616
+      },
+      "conclusion": "needs_more_validation",
+      "configuration": {
+        "overlap_penalty": 0.5,
+        "type": "score_with_overlap_penalty"
+      },
+      "method": "overlap_penalty_0.5",
+      "metrics": {
+        "average_best_ticket_matches": 4.833333333333333,
+        "average_matches_per_portfolio": 8.833333333333334,
+        "average_matches_per_ticket": 4.416666666666667,
+        "average_overlap": 4,
+        "average_unique_number_coverage": 8,
+        "best_match_count_distribution": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 1,
+          "5": 5,
+          "6": 0
+        },
+        "draws_evaluated": 6,
+        "match_counts": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 7,
+          "5": 5,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "3_plus": 1.0,
+          "4": 0.5833333333333334,
+          "4_plus": 1.0,
+          "5": 0.4166666666666667,
+          "5_plus": 0.4166666666666667,
+          "6": 0.0
+        },
+        "portfolio_prize_qualified_rate": 1.0,
+        "prize_qualified_rate": 1.0,
+        "tickets_evaluated": 12
+      },
+      "period_stability": [
+        {
+          "direction": "positive",
+          "mean_match_difference": 6.5,
+          "period": "2024-latest",
+          "prize_rate_difference": 0.8333333333333334,
+          "target_draws": 6
+        }
+      ]
+    },
+    "overlap_penalty_1": {
+      "comparison_vs_random": {
+        "adjusted_p_value": 0.3333333333333333,
+        "difference": 6.5,
+        "difference_ci": {
+          "confidence_level": 0.95,
+          "lower": 5.5,
+          "upper": 7.595833333333331
+        },
+        "effect_size": {
+          "absolute_difference": 6.5,
+          "relative_difference": 2.7857142857142856,
+          "standardized_mean_difference": 3.6055512754639896
+        },
+        "method_value": 8.833333333333334,
+        "random_value": 2.3333333333333335,
+        "raw_p_value": 0.09523809523809523
+      },
+      "conclusion": "needs_more_validation",
+      "configuration": {
+        "overlap_penalty": 1.0,
+        "type": "score_with_overlap_penalty"
+      },
+      "method": "overlap_penalty_1",
+      "metrics": {
+        "average_best_ticket_matches": 4.833333333333333,
+        "average_matches_per_portfolio": 8.833333333333334,
+        "average_matches_per_ticket": 4.416666666666667,
+        "average_overlap": 4,
+        "average_unique_number_coverage": 8,
+        "best_match_count_distribution": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 1,
+          "5": 5,
+          "6": 0
+        },
+        "draws_evaluated": 6,
+        "match_counts": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 7,
+          "5": 5,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.0,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.0,
+          "3_plus": 1.0,
+          "4": 0.5833333333333334,
+          "4_plus": 1.0,
+          "5": 0.4166666666666667,
+          "5_plus": 0.4166666666666667,
+          "6": 0.0
+        },
+        "portfolio_prize_qualified_rate": 1.0,
+        "prize_qualified_rate": 1.0,
+        "tickets_evaluated": 12
+      },
+      "period_stability": [
+        {
+          "direction": "positive",
+          "mean_match_difference": 6.5,
+          "period": "2024-latest",
+          "prize_rate_difference": 0.8333333333333334,
+          "target_draws": 6
+        }
+      ]
+    },
+    "top_ranked": {
+      "comparison_vs_random": {
+        "adjusted_p_value": 0.3333333333333333,
+        "difference": 3.1666666666666665,
+        "difference_ci": {
+          "confidence_level": 0.95,
+          "lower": 2.2458333333333336,
+          "upper": 4.4208333333333325
+        },
+        "effect_size": {
+          "absolute_difference": 3.1666666666666665,
+          "relative_difference": 1.357142857142857,
+          "standardized_mean_difference": 1.4974097718542914
+        },
+        "method_value": 5.5,
+        "random_value": 2.3333333333333335,
+        "raw_p_value": 0.19047619047619047
+      },
+      "conclusion": "needs_more_validation",
+      "configuration": {
+        "overlap_penalty": null,
+        "type": "current"
+      },
+      "method": "top_ranked",
+      "metrics": {
+        "average_best_ticket_matches": 5,
+        "average_matches_per_portfolio": 5.5,
+        "average_matches_per_ticket": 2.75,
+        "average_overlap": 0,
+        "average_unique_number_coverage": 12,
+        "best_match_count_distribution": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 6,
+          "6": 0
+        },
+        "draws_evaluated": 6,
+        "match_counts": {
+          "0": 3,
+          "1": 3,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 6,
+          "6": 0
+        },
+        "match_rates": {
+          "0": 0.25,
+          "1": 0.25,
+          "2": 0.0,
+          "3": 0.0,
+          "3_plus": 0.5,
+          "4": 0.0,
+          "4_plus": 0.5,
+          "5": 0.5,
+          "5_plus": 0.5,
+          "6": 0.0
+        },
+        "portfolio_prize_qualified_rate": 1.0,
+        "prize_qualified_rate": 0.5,
+        "tickets_evaluated": 12
+      },
+      "period_stability": [
+        {
+          "direction": "positive",
+          "mean_match_difference": 3.1666666666666665,
+          "period": "2024-latest",
+          "prize_rate_difference": 0.3333333333333333,
+          "target_draws": 6
+        }
+      ]
+    }
+  },
+  "model_name": "random_forest",
+  "portfolio_version": "two-ticket-portfolio-v1",
+  "random_metrics": {
+    "average_best_ticket_matches": 1.5,
+    "average_matches_per_portfolio": 2.3333333333333335,
+    "average_matches_per_ticket": 1.1666666666666667,
+    "average_overlap": 0.8333333333333334,
+    "average_unique_number_coverage": 11.166666666666666,
+    "best_match_count_distribution": {
+      "0": 1,
+      "1": 2,
+      "2": 2,
+      "3": 1,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    "draws_evaluated": 6,
+    "match_counts": {
+      "0": 4,
+      "1": 4,
+      "2": 2,
+      "3": 2,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    "match_rates": {
+      "0": 0.3333333333333333,
+      "1": 0.3333333333333333,
+      "2": 0.16666666666666666,
+      "3": 0.16666666666666666,
+      "3_plus": 0.16666666666666666,
+      "4": 0.0,
+      "4_plus": 0.0,
+      "5": 0.0,
+      "5_plus": 0.0,
+      "6": 0.0
+    },
+    "portfolio_prize_qualified_rate": 0.16666666666666666,
+    "prize_qualified_rate": 0.16666666666666666,
+    "tickets_evaluated": 12
+  },
+  "schema_version": "stage09-portfolio-evaluation-v1",
+  "sklearn_version": "1.9.0",
+  "warnings": [
+    "Portfolio objective scores are ranking heuristics, not winning probabilities.",
+    "Stage 09 keeps number-scoring models and features unchanged.",
+    "No payout amounts, ROI, new model families, or LLM components are included."
+  ]
+}

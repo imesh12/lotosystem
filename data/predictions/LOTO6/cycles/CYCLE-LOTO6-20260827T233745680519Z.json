@@ -1,0 +1,23 @@
+{
+  "completed_at": "2026-08-27T23:37:52.216504+00:00",
+  "cycle_id": "CYCLE-LOTO6-20260827T233745680519Z",
+  "errors": [
+    "conflicting completed settlement for LOTO6 #2131"
+  ],
+  "evaluated_predictions": [],
+  "history": {
+    "appended": 0,
+    "fallback_used": false,
+    "new_latest_draw": 2131,
+    "output_path": "data\\processed\\loto6_history.csv",
+    "previous_latest_draw": 2131,
+    "selected_source": null,
+    "source_attempts": [],
+    "update_status": "SOURCE_FAILURE"
+  },
+  "lottery": "LOTO6",
+  "next_prediction": null,
+  "settlements": [],
+  "started_at": "2026-08-27T23:37:45.680519+00:00",
+  "warnings": []
+}

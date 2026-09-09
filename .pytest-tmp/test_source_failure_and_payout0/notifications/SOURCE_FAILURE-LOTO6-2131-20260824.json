@@ -1,0 +1,31 @@
+{
+  "attempt_count": 1,
+  "body": "PAPER TRADING / SIMULATED\n\nLOTO6 source failure\nTime: 2026-08-24T21:30:00+09:00\nLatest canonical draw: 2130\nLatest canonical date: 2026-08-20\nPending prediction: 2131\n\nSources attempted\n- mizuho: SOURCE_FAILURE 403\n\nManual action is available with add-result after official verification.",
+  "created_at": "2026-09-02T01:53:55.072137+00:00",
+  "delivery_status": "SENT",
+  "draw_number": 2131,
+  "last_error": null,
+  "lottery": "LOTO6",
+  "notification_id": "SOURCE_FAILURE-LOTO6-2131-20260824",
+  "notification_type": "SOURCE_FAILURE",
+  "schema_version": "stage14-notification-v1",
+  "sent_at": "2026-09-02T01:53:55.073137+00:00",
+  "source": {
+    "latest_history": {
+      "latest_draw_date": "2026-08-20",
+      "latest_draw_number": 2130
+    },
+    "pending_prediction": {
+      "draw": 2131,
+      "target_draw_number": 2131
+    },
+    "sources_attempted": [
+      {
+        "error": "403",
+        "result": "SOURCE_FAILURE",
+        "source": "mizuho"
+      }
+    ]
+  },
+  "subject": "[LotoSystem] LOTO6 Source Failure"
+}

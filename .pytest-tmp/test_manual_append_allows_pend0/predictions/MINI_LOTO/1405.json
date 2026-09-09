@@ -1,0 +1,124 @@
+{
+  "config": {
+    "candidate_pool_size": 50,
+    "ml_min_training_draws": 100,
+    "ml_refit_interval": 25
+  },
+  "cost_yen": 400,
+  "dataset_hash": "dd5c804ce6e65e583f57e955cba3e3ca7d40c775fc429e6b01dd9c0686a36210",
+  "evaluation": {
+    "actual_bonus_numbers": [
+      6
+    ],
+    "actual_draw_date": "2026-08-25",
+    "actual_draw_number": 1405,
+    "actual_main_numbers": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "best_match_count": 2,
+    "evaluated_at": "2026-09-02T01:53:18.783244+00:00",
+    "gross_winnings_yen": null,
+    "prize_qualified_ticket_count": 0,
+    "ticket_results": [
+      {
+        "bonus_match_count": 1,
+        "main_match_count": 1,
+        "numbers": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "prize_category": null,
+        "qualifies_for_prize": false,
+        "ticket_index": 1
+      },
+      {
+        "bonus_match_count": 0,
+        "main_match_count": 2,
+        "numbers": [
+          3,
+          4,
+          10,
+          11,
+          12
+        ],
+        "prize_category": null,
+        "qualifies_for_prize": false,
+        "ticket_index": 2
+      }
+    ]
+  },
+  "feature_group": "pair_only",
+  "feature_names": [
+    "pair_strength_rate"
+  ],
+  "feature_version": "number-features-v2",
+  "generated_at": "2026-09-02T01:53:18.775907+00:00",
+  "gross_winnings_yen": null,
+  "latest_source_draw_date": "2026-08-18",
+  "latest_source_draw_number": 1404,
+  "lottery": "MINI_LOTO",
+  "model": "logistic_regression",
+  "model_parameters": {
+    "C": 1.0,
+    "class_weight": "balanced",
+    "dual": false,
+    "fit_intercept": true,
+    "intercept_scaling": 1,
+    "l1_ratio": 0.0,
+    "max_iter": 250,
+    "n_jobs": null,
+    "penalty": "deprecated",
+    "random_state": 123456,
+    "solver": "liblinear",
+    "tol": 0.0001,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "portfolio_method": "top_ranked",
+  "portfolio_version": "two-ticket-portfolio-v1",
+  "schema_version": "stage10-production-prediction-v1",
+  "seed": 123456,
+  "sklearn_version": "1.9.0",
+  "status": "EVALUATED",
+  "strategy": "conservative_stage09_selection",
+  "target_draw_date": "2026-08-25",
+  "target_draw_number": 1405,
+  "ticket_price_yen": 200,
+  "tickets": [
+    {
+      "numbers": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "score": 4.359074396830084,
+      "ticket_index": 1
+    },
+    {
+      "numbers": [
+        3,
+        4,
+        10,
+        11,
+        12
+      ],
+      "score": 3.497835624834955,
+      "ticket_index": 2
+    }
+  ],
+  "tickets_per_draw": 2,
+  "warnings": [
+    "Paper-trading record only; no ticket purchase is performed.",
+    "Generated tickets are research outputs, not guaranteed winning numbers.",
+    "Payout amounts and ROI are not calculated."
+  ]
+}

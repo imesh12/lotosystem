@@ -1,0 +1,47 @@
+{
+  "actual_bonus_numbers": [
+    6
+  ],
+  "actual_main_numbers": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "draw_date": "2026-08-25",
+  "draw_number": 1401,
+  "financial_status": "COMPLETE",
+  "lottery": "MINI_LOTO",
+  "paper_gross_winnings_yen": 0,
+  "paper_net_yen": -200,
+  "paper_total_cost_yen": 200,
+  "payouts": [],
+  "prediction_dataset_hash": "dataset",
+  "prediction_generated_at": "2026-08-24T00:00:00+00:00",
+  "prediction_record_path": "mini.json",
+  "schema_version": "stage12-paper-settlement-v1",
+  "settled_at": "2026-09-02T01:53:46.379195+00:00",
+  "ticket_count": 1,
+  "ticket_price_yen": 200,
+  "tickets": [
+    {
+      "bonus_match_count": 0,
+      "main_match_count": 0,
+      "numbers": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "payout_yen": 0,
+      "prize_tier": "NO_PRIZE",
+      "ticket_index": 1
+    }
+  ],
+  "warnings": [
+    "Paper-trading settlement only; no ticket purchase is recorded.",
+    "paper_gross_winnings_yen and paper_net_yen are simulated accounting fields."
+  ]
+}

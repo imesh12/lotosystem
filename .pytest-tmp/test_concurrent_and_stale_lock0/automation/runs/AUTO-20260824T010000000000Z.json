@@ -1,0 +1,38 @@
+{
+  "completed_at": "2026-09-02T10:53:54.998178+09:00",
+  "errors": [],
+  "lotteries": [
+    {
+      "action": "PREDICTION_CREATED",
+      "errors": [],
+      "history_update": {
+        "appended": 0,
+        "new_latest_draw": 2109,
+        "previous_latest_draw": 2109
+      },
+      "lottery": "LOTO6",
+      "next_prediction": {
+        "created": true,
+        "draw": 2110,
+        "record_path": "C:\\Users\\imcom\\Downloads\\loto-system\\.pytest-tmp\\test_concurrent_and_stale_lock0\\LOTO6\\2110.json",
+        "status": "PENDING",
+        "target_date": "2026-08-24",
+        "tickets": 3
+      },
+      "next_run_at": "2026-08-24T21:00:00+09:00",
+      "notifications": [],
+      "prediction_evaluation": {
+        "evaluated": []
+      },
+      "result_source_status": null,
+      "settlement": {
+        "paths": []
+      },
+      "warnings": []
+    }
+  ],
+  "run_at": "2026-08-24T10:00:00+09:00",
+  "run_id": "AUTO-20260824T010000000000Z",
+  "timezone": "Asia/Tokyo",
+  "warnings": []
+}

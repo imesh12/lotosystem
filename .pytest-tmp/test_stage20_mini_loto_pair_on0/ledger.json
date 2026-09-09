@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "bh_exploratory_p_value": 1.0,
+      "comparison": "extra_trees_vs_random",
+      "conclusion": "no_evidence",
+      "dataset_hash": "82917ad810953c492f9ac51253711683f76fd8691208c4bcd22591d4c1d33230",
+      "experiment_id": "V2-EXP-d600b831d49221a3",
+      "feature_group": "pair_only",
+      "hypothesis": "Extra Trees may improve historical pair_only ranking",
+      "ledger_adjusted_p_value": 1.0,
+      "lottery": "MINI_LOTO",
+      "model": "extra_trees",
+      "raw_p_value": 1.0,
+      "stage": "20",
+      "stage_adjusted_p_value": 1.0,
+      "status": "RETIRE"
+    }
+  ],
+  "exploratory_method": "benjamini_hochberg",
+  "multiple_comparison_method": "holm",
+  "schema_version": "v2-experiment-ledger-v1"
+}

@@ -1,0 +1,11 @@
+{
+  "email_enabled": false,
+  "loto6": {
+    "enabled": true,
+    "tickets_per_draw": 5
+  },
+  "mini_loto": {
+    "enabled": true,
+    "tickets_per_draw": 3
+  }
+}

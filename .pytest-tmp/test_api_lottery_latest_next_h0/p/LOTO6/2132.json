@@ -1,0 +1,42 @@
+{
+  "config": {},
+  "cost_yen": 200,
+  "dataset_hash": "dataset",
+  "evaluation": null,
+  "feature_group": "test",
+  "feature_names": [],
+  "feature_version": "test",
+  "generated_at": "2026-08-24T00:00:00+00:00",
+  "gross_winnings_yen": null,
+  "latest_source_draw_date": "2026-08-01",
+  "latest_source_draw_number": 2130,
+  "lottery": "LOTO6",
+  "model": "test",
+  "model_parameters": {},
+  "portfolio_method": "test",
+  "portfolio_version": "test",
+  "schema_version": "stage10-production-prediction-v1",
+  "seed": 123456,
+  "sklearn_version": "test",
+  "status": "PENDING",
+  "strategy": "test",
+  "target_draw_date": "2026-08-27",
+  "target_draw_number": 2132,
+  "ticket_price_yen": 200,
+  "tickets": [
+    {
+      "numbers": [
+        2,
+        7,
+        12,
+        17,
+        22,
+        27
+      ],
+      "score": 0.0,
+      "ticket_index": 1
+    }
+  ],
+  "tickets_per_draw": 1,
+  "warnings": []
+}

@@ -1,0 +1,168 @@
+{
+  "champion_direct_equality": {
+    "evaluated_draws": 1,
+    "first_divergence_draw": null,
+    "fraction_identical": 1.0,
+    "identical_ranking_draws": 1
+  },
+  "classification": "INSUFFICIENT_DATA",
+  "evaluated_draw_count": 1,
+  "experiment": "stage27_prospective_signal_tracking",
+  "frozen_draw_count": 2,
+  "lottery": "MINI_LOTO",
+  "missed_draws": [],
+  "pending_draw_count": 1,
+  "prospective_start_draw": 1403,
+  "schema_version": "v2-stage27-summary-v1",
+  "signals": {
+    "frequency_20": {
+      "bootstrap_95_ci": null,
+      "classification": "INSUFFICIENT_DATA",
+      "cumulative_paired_mean_difference": -4.199999999999999,
+      "effect_size": {
+        "absolute_difference": -4.199999999999999,
+        "relative_difference": null,
+        "standardized_mean_difference": 0.0
+      },
+      "evaluated_draw_count": 1,
+      "frozen_draw_count": 2,
+      "mean_rank_advantage": -4.199999999999999,
+      "mean_winner_rank": 19.0,
+      "paired_permutation_p_value": null,
+      "pending_draw_count": 1,
+      "random_mean_winner_rank": 14.8,
+      "random_top15_average": 0.6,
+      "random_top5_average": 0.2,
+      "top15_capture_average": 0.4,
+      "top5_capture_average": 0.2,
+      "wins_ties_losses": {
+        "mean_winner_rank": {
+          "losses": 1,
+          "ties": 0,
+          "wins": 0
+        },
+        "top15_capture": {
+          "losses": 1,
+          "ties": 0,
+          "wins": 0
+        },
+        "top5_capture": {
+          "losses": 0,
+          "ties": 1,
+          "wins": 0
+        }
+      }
+    },
+    "pair_strength_direct": {
+      "bootstrap_95_ci": null,
+      "classification": "INSUFFICIENT_DATA",
+      "cumulative_paired_mean_difference": 1.6000000000000014,
+      "effect_size": {
+        "absolute_difference": 1.6000000000000014,
+        "relative_difference": null,
+        "standardized_mean_difference": 0.0
+      },
+      "evaluated_draw_count": 1,
+      "frozen_draw_count": 2,
+      "mean_rank_advantage": 1.6000000000000014,
+      "mean_winner_rank": 13.2,
+      "paired_permutation_p_value": null,
+      "pending_draw_count": 1,
+      "random_mean_winner_rank": 14.8,
+      "random_top15_average": 0.6,
+      "random_top5_average": 0.2,
+      "top15_capture_average": 0.6,
+      "top5_capture_average": 0.4,
+      "wins_ties_losses": {
+        "mean_winner_rank": {
+          "losses": 0,
+          "ties": 0,
+          "wins": 1
+        },
+        "top15_capture": {
+          "losses": 0,
+          "ties": 1,
+          "wins": 0
+        },
+        "top5_capture": {
+          "losses": 0,
+          "ties": 0,
+          "wins": 1
+        }
+      }
+    },
+    "paired_random": {
+      "bootstrap_95_ci": null,
+      "classification": "INSUFFICIENT_DATA",
+      "cumulative_paired_mean_difference": null,
+      "effect_size": null,
+      "evaluated_draw_count": 1,
+      "frozen_draw_count": 2,
+      "mean_rank_advantage": null,
+      "mean_winner_rank": 14.8,
+      "paired_permutation_p_value": null,
+      "pending_draw_count": 1,
+      "random_mean_winner_rank": null,
+      "random_top15_average": null,
+      "random_top5_average": null,
+      "top15_capture_average": 0.6,
+      "top5_capture_average": 0.2,
+      "wins_ties_losses": {
+        "mean_winner_rank": {
+          "losses": 0,
+          "ties": 0,
+          "wins": 0
+        },
+        "top15_capture": {
+          "losses": 0,
+          "ties": 0,
+          "wins": 0
+        },
+        "top5_capture": {
+          "losses": 0,
+          "ties": 0,
+          "wins": 0
+        }
+      }
+    },
+    "production_pair_lr": {
+      "bootstrap_95_ci": null,
+      "classification": "INSUFFICIENT_DATA",
+      "cumulative_paired_mean_difference": 1.6000000000000014,
+      "effect_size": {
+        "absolute_difference": 1.6000000000000014,
+        "relative_difference": null,
+        "standardized_mean_difference": 0.0
+      },
+      "evaluated_draw_count": 1,
+      "frozen_draw_count": 2,
+      "mean_rank_advantage": 1.6000000000000014,
+      "mean_winner_rank": 13.2,
+      "paired_permutation_p_value": null,
+      "pending_draw_count": 1,
+      "random_mean_winner_rank": 14.8,
+      "random_top15_average": 0.6,
+      "random_top5_average": 0.2,
+      "top15_capture_average": 0.6,
+      "top5_capture_average": 0.4,
+      "wins_ties_losses": {
+        "mean_winner_rank": {
+          "losses": 0,
+          "ties": 0,
+          "wins": 1
+        },
+        "top15_capture": {
+          "losses": 0,
+          "ties": 1,
+          "wins": 0
+        },
+        "top5_capture": {
+          "losses": 0,
+          "ties": 0,
+          "wins": 1
+        }
+      }
+    }
+  },
+  "source": "derived from immutable Stage 27 draw records"
+}

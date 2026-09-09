@@ -1,0 +1,32 @@
+{
+  "completed_at": "2026-09-02T01:53:43.905974+00:00",
+  "cycle_id": "CYCLE-LOTO6-20260902T015343343534Z",
+  "errors": [],
+  "evaluated_predictions": [
+    2110
+  ],
+  "history": {
+    "appended": 1,
+    "fallback_used": false,
+    "new_latest_draw": 2110,
+    "output_path": "C:\\Users\\imcom\\Downloads\\loto-system\\.pytest-tmp\\test_cycle_appends_evaluates_p0\\loto6.csv",
+    "previous_latest_draw": 2109,
+    "selected_source": null,
+    "source_attempts": [],
+    "update_status": "NEW_RESULT"
+  },
+  "lottery": "LOTO6",
+  "next_prediction": {
+    "created": true,
+    "draw": 2111,
+    "record_path": "C:\\Users\\imcom\\Downloads\\loto-system\\.pytest-tmp\\test_cycle_appends_evaluates_p0\\predictions\\LOTO6\\2111.json",
+    "status": "PENDING",
+    "target_date": "2025-12-01",
+    "tickets": 3
+  },
+  "settlements": [
+    "C:\\Users\\imcom\\Downloads\\loto-system\\.pytest-tmp\\test_cycle_appends_evaluates_p0\\settlements\\LOTO6\\2110.json"
+  ],
+  "started_at": "2026-09-02T01:53:43.343534+00:00",
+  "warnings": []
+}

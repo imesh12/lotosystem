@@ -1,0 +1,24 @@
+{
+  "challenger": "logistic_regression + pair_network_v1 + top_ranked",
+  "champion": "logistic_regression + pair_only + top_ranked",
+  "dataset_hash": "42f54c3308124b244eb6f556db5624580468a4485626ef1332e9722356ae90bf",
+  "feature_group": "pair_network_v1",
+  "feature_names": [
+    "pair_strength_rate",
+    "weighted_degree",
+    "normalized_weighted_degree",
+    "neighbor_strength_mean",
+    "neighbor_strength_max",
+    "recent_pair_strength"
+  ],
+  "historical_cutoff": {
+    "excluded_draws": "draws after #1400, including #1401 if present",
+    "last_included_draw": 1400
+  },
+  "lottery": "MINI_LOTO",
+  "primary_comparison": "challenger_vs_champion",
+  "primary_hypothesis": "Pair-network structural information improves prospective number ranking relative to the existing pair_only champion.",
+  "primary_metric": "average main-number matches per ticket in walk-forward evaluation",
+  "schema_version": "v2-stage22-preregistration-v1",
+  "secondary_comparison": "challenger_vs_matched_random"
+}

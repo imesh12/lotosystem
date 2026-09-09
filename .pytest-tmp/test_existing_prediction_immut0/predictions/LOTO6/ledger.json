@@ -1,0 +1,32 @@
+{
+  "entries": [
+    {
+      "best_matches": 5,
+      "cost_yen": 600,
+      "evaluated": true,
+      "gross_winnings_yen": null,
+      "prediction_created_before_draw": true,
+      "prize_categories": [
+        null,
+        "3rd",
+        null
+      ],
+      "target_draw_date": "2026-08-24",
+      "target_draw_number": 2111,
+      "tickets_generated": 3
+    },
+    {
+      "best_matches": null,
+      "cost_yen": 1000,
+      "evaluated": false,
+      "gross_winnings_yen": null,
+      "prediction_created_before_draw": true,
+      "prize_categories": [],
+      "target_draw_date": "2026-08-27",
+      "target_draw_number": 2112,
+      "tickets_generated": 5
+    }
+  ],
+  "lottery": "LOTO6",
+  "schema_version": "stage10-paper-trading-ledger-v1"
+}

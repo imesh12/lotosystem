@@ -1,0 +1,10 @@
+{
+  "experiment": "stage27_prospective_signal_tracking",
+  "initialized_at": "2026-09-04T03:10:11.524485+00:00",
+  "latest_known_date_at_initialization": "2026-09-01",
+  "latest_known_draw_at_initialization": 1402,
+  "lottery": "MINI_LOTO",
+  "missed_draws": [],
+  "prospective_start_draw": 1403,
+  "schema_version": "v2-stage27-metadata-v1"
+}

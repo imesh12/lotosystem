@@ -1,45 +1,45 @@
 {
   "all_time": {
-    "draws_evaluated": 3,
+    "draws_evaluated": 8,
     "lottery": "ALL",
     "paper_gross_winnings_yen": 0,
-    "paper_net_yen": -1800,
+    "paper_net_yen": -4800,
     "paper_return_ratio": 0.0,
-    "paper_total_cost_yen": 1800,
+    "paper_total_cost_yen": 4800,
     "payout_pending_draws": 0,
     "prize_tier_counts": {
-      "NO_PRIZE": 9
+      "NO_PRIZE": 24
     },
-    "tickets": 9,
+    "tickets": 24,
     "winning_ticket_count": 0
   },
   "lotteries": {
     "LOTO6": {
-      "draws_evaluated": 2,
+      "draws_evaluated": 5,
       "lottery": "LOTO6",
       "paper_gross_winnings_yen": 0,
-      "paper_net_yen": -1200,
+      "paper_net_yen": -3000,
       "paper_return_ratio": 0.0,
-      "paper_total_cost_yen": 1200,
+      "paper_total_cost_yen": 3000,
       "payout_pending_draws": 0,
       "prize_tier_counts": {
-        "NO_PRIZE": 6
+        "NO_PRIZE": 15
       },
-      "tickets": 6,
+      "tickets": 15,
       "winning_ticket_count": 0
     },
     "MINI_LOTO": {
-      "draws_evaluated": 1,
+      "draws_evaluated": 3,
       "lottery": "MINI_LOTO",
       "paper_gross_winnings_yen": 0,
-      "paper_net_yen": -600,
+      "paper_net_yen": -1800,
       "paper_return_ratio": 0.0,
-      "paper_total_cost_yen": 600,
+      "paper_total_cost_yen": 1800,
       "payout_pending_draws": 0,
       "prize_tier_counts": {
-        "NO_PRIZE": 3
+        "NO_PRIZE": 9
       },
-      "tickets": 3,
+      "tickets": 9,
       "winning_ticket_count": 0
     }
   },

@@ -1,0 +1,130 @@
+{
+  "actual_bonus_numbers": [
+    41
+  ],
+  "actual_main_numbers": [
+    7,
+    13,
+    32,
+    34,
+    37,
+    39
+  ],
+  "draw_date": "2026-09-07",
+  "draw_number": 2135,
+  "financial_status": "COMPLETE",
+  "lottery": "LOTO6",
+  "paper_gross_winnings_yen": 0,
+  "paper_net_yen": -600,
+  "paper_total_cost_yen": 600,
+  "payouts": [
+    {
+      "draw_number": 2135,
+      "lottery": "LOTO6",
+      "payout_yen": 0,
+      "prize_tier": "1st",
+      "retrieved_at": "2026-09-07T23:42:37.262364+00:00",
+      "source": "smbc_public_result",
+      "source_url": "https://www.smbc.co.jp/kojin/takarakuji/xml/takara_chusen_05.xml",
+      "winners_count": 0
+    },
+    {
+      "draw_number": 2135,
+      "lottery": "LOTO6",
+      "payout_yen": 23183400,
+      "prize_tier": "2nd",
+      "retrieved_at": "2026-09-07T23:42:37.262364+00:00",
+      "source": "smbc_public_result",
+      "source_url": "https://www.smbc.co.jp/kojin/takarakuji/xml/takara_chusen_05.xml",
+      "winners_count": 3
+    },
+    {
+      "draw_number": 2135,
+      "lottery": "LOTO6",
+      "payout_yen": 449700,
+      "prize_tier": "3rd",
+      "retrieved_at": "2026-09-07T23:42:37.262364+00:00",
+      "source": "smbc_public_result",
+      "source_url": "https://www.smbc.co.jp/kojin/takarakuji/xml/takara_chusen_05.xml",
+      "winners_count": 167
+    },
+    {
+      "draw_number": 2135,
+      "lottery": "LOTO6",
+      "payout_yen": 8400,
+      "prize_tier": "4th",
+      "retrieved_at": "2026-09-07T23:42:37.262364+00:00",
+      "source": "smbc_public_result",
+      "source_url": "https://www.smbc.co.jp/kojin/takarakuji/xml/takara_chusen_05.xml",
+      "winners_count": 9341
+    },
+    {
+      "draw_number": 2135,
+      "lottery": "LOTO6",
+      "payout_yen": 1000,
+      "prize_tier": "5th",
+      "retrieved_at": "2026-09-07T23:42:37.262364+00:00",
+      "source": "smbc_public_result",
+      "source_url": "https://www.smbc.co.jp/kojin/takarakuji/xml/takara_chusen_05.xml",
+      "winners_count": 147298
+    }
+  ],
+  "prediction_dataset_hash": "840f50356a1d60a870092a23d628d6859f3f72ac923d0ed17a1a100777cf8c8d",
+  "prediction_generated_at": "2026-09-03T15:00:23.755564+00:00",
+  "prediction_record_path": "data\\predictions\\LOTO6\\2135.json",
+  "schema_version": "stage12-paper-settlement-v1",
+  "settled_at": "2026-09-07T23:42:37.264364+00:00",
+  "ticket_count": 3,
+  "ticket_price_yen": 200,
+  "tickets": [
+    {
+      "bonus_match_count": 0,
+      "main_match_count": 1,
+      "numbers": [
+        12,
+        19,
+        21,
+        35,
+        37,
+        42
+      ],
+      "payout_yen": 0,
+      "prize_tier": "NO_PRIZE",
+      "ticket_index": 1
+    },
+    {
+      "bonus_match_count": 0,
+      "main_match_count": 0,
+      "numbers": [
+        2,
+        15,
+        16,
+        25,
+        30,
+        38
+      ],
+      "payout_yen": 0,
+      "prize_tier": "NO_PRIZE",
+      "ticket_index": 2
+    },
+    {
+      "bonus_match_count": 0,
+      "main_match_count": 1,
+      "numbers": [
+        10,
+        22,
+        27,
+        28,
+        31,
+        39
+      ],
+      "payout_yen": 0,
+      "prize_tier": "NO_PRIZE",
+      "ticket_index": 3
+    }
+  ],
+  "warnings": [
+    "Paper-trading settlement only; no ticket purchase is recorded.",
+    "paper_gross_winnings_yen and paper_net_yen are simulated accounting fields."
+  ]
+}

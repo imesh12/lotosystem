@@ -1,0 +1,39 @@
+{
+  "lotteries": {
+    "LOTO6": {
+      "conclusion": "INSUFFICIENT_DATA",
+      "cumulative_by_draw": [
+        {
+          "draw_number": 2131,
+          "production_average_total_matches": 3.0,
+          "random_average_total_matches": 2.471
+        }
+      ],
+      "eligible_draws": 1,
+      "evaluated_draws": 1,
+      "lottery": "LOTO6",
+      "production_average_best_ticket_matches": 2,
+      "production_average_total_portfolio_matches": 3,
+      "production_minus_random_total_matches": 0.5289999999999999,
+      "production_paper_cost": 600,
+      "production_paper_gross": 0,
+      "production_paper_net": -600,
+      "production_percentile": 0.792,
+      "production_prize_qualified_rate": 0.0,
+      "random_mean_total_portfolio_matches": 2.471,
+      "rolling_windows": {
+        "trailing_10": [],
+        "trailing_5": []
+      },
+      "total_tickets": 3
+    },
+    "MINI_LOTO": {
+      "conclusion": "INSUFFICIENT_DATA",
+      "eligible_draws": 0,
+      "evaluated_draws": 0,
+      "lottery": "MINI_LOTO"
+    }
+  },
+  "overall_conclusion": "INSUFFICIENT_DATA",
+  "schema_version": "stage19-prospective-summary-v1"
+}

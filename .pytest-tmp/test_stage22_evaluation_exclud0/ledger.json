@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "bh_exploratory_p_value": 0.047619047619047616,
+      "comparison": "pair_network_v1_vs_pair_only_champion",
+      "conclusion": "weak_signal",
+      "dataset_hash": "42f54c3308124b244eb6f556db5624580468a4485626ef1332e9722356ae90bf",
+      "experiment_id": "V2-EXP-5b14a334340c2b65",
+      "feature_group": "pair_network_v1",
+      "hypothesis": "Mini Loto pair_network_v1 improves over pair_only champion",
+      "ledger_adjusted_p_value": 0.047619047619047616,
+      "lottery": "MINI_LOTO",
+      "model": "logistic_regression",
+      "raw_p_value": 0.047619047619047616,
+      "stage": "22",
+      "stage_adjusted_p_value": 0.09523809523809523,
+      "status": "KEEP_AS_SHADOW_CANDIDATE"
+    }
+  ],
+  "exploratory_method": "benjamini_hochberg",
+  "multiple_comparison_method": "holm",
+  "schema_version": "v2-experiment-ledger-v1"
+}

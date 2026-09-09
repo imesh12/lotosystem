@@ -1,0 +1,12 @@
+{
+  "lotteries": {
+    "LOTO6": {
+      "conclusion": "INSUFFICIENT_DATA",
+      "eligible_draws": 0,
+      "evaluated_draws": 0,
+      "lottery": "LOTO6"
+    }
+  },
+  "overall_conclusion": "INSUFFICIENT_DATA",
+  "schema_version": "stage19-prospective-summary-v1"
+}
