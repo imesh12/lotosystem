@@ -57,6 +57,10 @@ ACTION_RESULT_PROCESSED = "RESULT_PROCESSED"
 ACTION_SOURCE_FAILURE = "SOURCE_FAILURE"
 ACTION_PREDICTION_CREATED = "PREDICTION_CREATED"
 
+STAGE27_LIFECYCLE_OK = "OK"
+STAGE27_LIFECYCLE_ERROR = "ERROR"
+STAGE27_LIFECYCLE_NOT_APPLICABLE = "NOT_APPLICABLE"
+
 
 @dataclass(frozen=True, slots=True)
 class AutomationConfig:
@@ -234,6 +238,12 @@ def _run_due_cycle(
             "prediction_evaluation": {"evaluated": ()},
             "settlement": {"paths": ()},
             "next_prediction": None,
+            "stage27": None,
+            "stage27_lifecycle_status": (
+                STAGE27_LIFECYCLE_NOT_APPLICABLE
+                if str(lottery.code) != "MINI_LOTO"
+                else STAGE27_LIFECYCLE_ERROR
+            ),
             "next_run_at": _retry_at(current, config).isoformat(),
             "warnings": (),
             "errors": (str(exc),),
@@ -242,6 +252,7 @@ def _run_due_cycle(
     cycle_payload = cycle_result_payload(cycle)
     status = cycle.history.update_status
     action = ACTION_RESULT_PROCESSED if status == HISTORY_UPDATE_NEW_RESULT else ACTION_CHECK_RESULT
+    stage27_status, stage27_errors = _stage27_lifecycle_outcome(lottery, cycle_payload["stage27"])
     return {
         "lottery": str(lottery.code),
         "action": action,
@@ -250,10 +261,39 @@ def _run_due_cycle(
         "prediction_evaluation": {"evaluated": cycle.evaluated_predictions},
         "settlement": {"paths": cycle.settlements},
         "next_prediction": cycle_payload["next_prediction"],
+        "stage27": cycle_payload["stage27"],
+        "stage27_lifecycle_status": stage27_status,
         "next_run_at": _next_run_after_cycle(cycle, current, config, status).isoformat(),
         "warnings": cycle.warnings,
-        "errors": cycle.errors,
+        "errors": tuple(cycle.errors) + stage27_errors,
     }
+
+
+def _stage27_lifecycle_outcome(
+    lottery: LotteryDefinition,
+    stage27_payload: dict[str, Any] | None,
+) -> tuple[str, tuple[str, ...]]:
+    """Classify the Stage 27 sub-cycle's outcome so a cycle can never silently
+
+    report overall success while Stage 27's own freeze/evaluate/summary
+    lifecycle failed or was skipped. Returns (status, extra_errors); any
+    extra_errors must be folded into the automation payload's own "errors"
+    so a failure here cannot be swallowed without appearing in the saved
+    automation run record.
+    """
+    if str(lottery.code) != "MINI_LOTO":
+        return STAGE27_LIFECYCLE_NOT_APPLICABLE, ()
+    if stage27_payload is None:
+        return (
+            STAGE27_LIFECYCLE_ERROR,
+            ("Stage 27 lifecycle did not run for MINI_LOTO",),
+        )
+    if stage27_payload.get("status") == "ERROR":
+        return (
+            STAGE27_LIFECYCLE_ERROR,
+            (f"Stage 27 lifecycle failed: {stage27_payload.get('error')}",),
+        )
+    return STAGE27_LIFECYCLE_OK, ()
 
 
 def _with_notifications(
